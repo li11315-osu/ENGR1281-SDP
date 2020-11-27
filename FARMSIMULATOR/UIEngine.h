@@ -92,8 +92,8 @@ isClicked methods, which are intended to be overwritten with different functions
 for each specific element type. 
 
 Elements are polled for click detection in the opposite order that they get 
-rendered in given that objects drawn last will show up on top. One goal of this
-engine is to make layering easy to handle.
+rendered in, at least depth-wise, given that objects drawn last will show up on 
+top. One goal of this engine is to make layering easy to handle.
 
 
 void UIElement::setClickHandler(void (*func)())
@@ -174,7 +174,8 @@ method is prevent potential memory leaks.
 
 This method frees the memory allocated for the entire element subtree, so if only 
 the parent element needs to be freed while the child elements are left as-is, then
-the built-in free() function should be used
+the built-in delete command should be used (I think that's how it works, at least. 
+Memory allocation isn't my strong suit.)
 
 */
 class UIElement {
@@ -242,7 +243,7 @@ class UIElement {
         bool removeElement(UIElement* element);
 
         void renderElements();
-        void handleClick(int x, int y);
+        bool handleClick(int x, int y);
 
         void freeElements();
 
@@ -253,7 +254,7 @@ class UIElement {
         };
 
         ElementListNode* head = nullptr;
-        ElementListNode* tail = nullptr;
+        // ElementListNode* tail = nullptr;
     };
 
     ElementList* children = new ElementList();
