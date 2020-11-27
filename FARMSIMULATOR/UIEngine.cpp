@@ -213,7 +213,7 @@ void RectangleElement::renderSelf() {
 
 // isClicked function override
 bool RectangleElement::isClicked(int x, int y) {
-    return x >= xPos && x <= xPos + width && y >= yPos && y <= yPos + height;
+    return x >= xPos && x < xPos + width && y >= yPos && y < yPos + height;
 }
 
 void RectangleElement::setDimensions(int w, int h) {
@@ -248,11 +248,11 @@ CircleElement::CircleElement(int x, int y, int r, colorT fill, colorT line) {
 void CircleElement::renderSelf() {
     // fill circle with given dimensions and color
     LCD.SetFontColor(fillColor);
-    LCD.FillCircle(xPos, yPos, width, radius);
+    LCD.FillCircle(xPos, yPos, radius);
     // draw circle border if line color differs from fill color
     if (fillColor != lineColor) {
         LCD.SetFontColor(lineColor);
-        LCD.DrawCircle(xPos, yPos, width, radius);
+        LCD.DrawCircle(xPos, yPos, radius);
     }
 }
 
@@ -273,12 +273,94 @@ bool TextElement::isClicked(int x, int y) { return false; }
 
 /*
 Member functions for StringElement
+Written by Thomas Li
+11/27/2020
 */
+// constructors
+StringElement::StringElement(int x, int y, stringT s) {
+    xPos = x;
+    yPos = y;
+    textString = s;
+}
+StringElement::StringElement(int x, int y, stringT s, colorT c) {
+    xPos = x;
+    yPos = y;
+    textString = s;
+    fontColor = c;
+}
+
+// member access/assignment
+void StringElement::setString(stringT s) { textString = s; }
+stringT StringElement::getString() { return textString; }
+
+// render procedure override
+void StringElement::renderSelf() {
+    // write text string to screen at stored coordinates
+    LCD.SetFontColor(fontColor);
+    LCD.WriteAt(textString, xPos, yPos);
+}
 
 /*
 Member functions for ValueElement
+Written by Thomas Li
+11/27/2020
 */
+// constructors
+ValueElement::ValueElement(int x, int y, int (*func)()) {
+    xPos = x;
+    yPos = y;
+    valueFunction = func;
+}
+ValueElement::ValueElement(int x, int y, int (*func)(), colorT c) {
+    xPos = x;
+    yPos = y;
+    valueFunction = func;
+    fontColor = c;
+}
+
+// render procedure override
+void ValueElement::renderSelf() {
+    // write function return value to screen at stored coordinates
+    LCD.SetFontColor(fontColor);
+    LCD.WriteAt(valueFunction(), xPos, yPos);
+}
 
 /*
 Member functions for SpriteElement
 */
+// constructors
+SpriteElement::SpriteElement(int x, int y, int w, int h) {
+    xPos = x;
+    yPos = y;
+    width = w;
+    height = h;
+}
+SpriteElement::SpriteElement(int x, int y, int w, int h, colorT** p) {
+    xPos = x;
+    yPos = y;
+    width = w;
+    height = h;
+    pattern = p;
+}
+
+// member assignment
+void SpriteElement::resize(int w, int h) {
+    width = w;
+    height = h;
+}
+void SpriteElement::setPattern(colorT** p) {
+    pattern = p;
+}
+
+// function overrides
+void SpriteElement::renderSelf() {
+    for (int row = xPos; row < xPos + width; ++row) {
+        for (int column = yPos; column < yPos + height; ++column) {
+            LCD.SetFontColor(pattern[row][column]);
+            LCD.DrawPixel(row, column);
+        }
+    }
+}
+bool SpriteElement::isClicked(int x, int y) {
+    return x >= xPos && x < xPos + width && y >= yPos && y < yPos + height;
+}
