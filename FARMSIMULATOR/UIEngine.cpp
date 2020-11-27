@@ -164,19 +164,112 @@ void UIElement::ElementList::freeElements() {
 
 /*
 Member functions for PolygonElement
+Written by Thomas Li
+11/27/2020
 */
+// single-member assignments, fairly self-explanatory
+void PolygonElement::setFillColor(colorT color) { fillColor = color; }
+void PolygonElement::setLineColor(colorT color) { lineColor = color; }
+
+// virtual functions - to be overridden by subclasses
+void PolygonElement::renderSelf() { }
+bool PolygonElement::isClicked(int x, int y) { return false; }
 
 /*
 Member functions for RectangleElement 
+Written by Thomas Li
+11/27/2020
 */
+// constructors
+RectangleElement::RectangleElement(int x, int y, int w, int h) {
+    // assign members
+    xPos = x;
+    yPos = y;
+    width = w;
+    height = h;
+}
+RectangleElement::RectangleElement(int x, int y, int w, int h, colorT fill, colorT line) {
+    // assign members
+    xPos = x;
+    yPos = y;
+    width = w;
+    height = h;
+
+    fillColor = fill;
+    lineColor = line;
+}
+    
+// render prodecure override
+void RectangleElement::renderSelf() {
+    // fill rectangle with given dimensions and color
+    LCD.SetFontColor(fillColor);
+    LCD.FillRectangle(xPos, yPos, width, height);
+    // draw rectangle border if line color differs from fill color
+    if (fillColor != lineColor) {
+        LCD.SetFontColor(lineColor);
+        LCD.DrawRectangle(xPos, yPos, width, height);
+    }
+}
+
+// isClicked function override
+bool RectangleElement::isClicked(int x, int y) {
+    return x >= xPos && x <= xPos + width && y >= yPos && y <= yPos + height;
+}
+
+void RectangleElement::setDimensions(int w, int h) {
+    // assign dimensions
+    width = w;
+    height = h;
+}
+// single-member accessors
+int RectangleElement::getWidth() { return width; }
+int RectangleElement::getHeight() { return height; }
 
 /* 
 Member functions for CircleElement
+Written by Thomas Li
+11/27/2020
 */
+// constructors
+CircleElement::CircleElement(int x, int y, int r) {
+    xPos = x;
+    yPos = y;
+    radius = r;
+}
+CircleElement::CircleElement(int x, int y, int r, colorT fill, colorT line) {
+    xPos = x;
+    yPos = y;
+    radius = r;
+    fillColor = fill;
+    lineColor = line;
+}
+
+// render procedure override
+void CircleElement::renderSelf() {
+    // fill circle with given dimensions and color
+    LCD.SetFontColor(fillColor);
+    LCD.FillCircle(xPos, yPos, width, radius);
+    // draw circle border if line color differs from fill color
+    if (fillColor != lineColor) {
+        LCD.SetFontColor(lineColor);
+        LCD.DrawCircle(xPos, yPos, width, radius);
+    }
+}
+
+// single-member assignment/access
+void CircleElement::setRadius(int r) { radius = r; }
+int CircleElement::getRadius() { return radius; }
 
 /*
 Member functions for TextElement
+Written by Thomas Li
+11/27/2020
 */
+// single-member assignment
+void TextElement::setFontColor(colorT c) { fontColor = c; }
+// virtual functions - to be overridden by subclasses
+void TextElement::renderSelf() { }
+bool TextElement::isClicked(int x, int y) { return false; }
 
 /*
 Member functions for StringElement

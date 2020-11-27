@@ -9,11 +9,19 @@ colorT defaultLine = LCD.White;
 /*
 Proteus UI Engine 
 Created 11/25/2020
-Last Modified: 11/26/2020
+Last Modified: 11/27/2020
 
 With this game being heavily UI-dependent and the FEHLCD library, being 
 somewhat limited, I decided to try implementing a cheap knockoff of the 
-JavaScript Document Object Model to make it easier for us to create graphics
+JavaScript Document Object Model to make it easier for us to create
+and manage graphics.
+
+I'm not going to pretend this is good code by any circumstances. I thought 
+most of it up in the back of my head at around 1 AM on either Monday or Tuesday
+(it's been a while so I forget exactly what happened) and made changes on-the-fly 
+as needed with little proper planning. At this stage, I haven't even tested it yet
+so it could very well fall apart the moment I try to use it, but hopefully it 
+works as intended.
 
 Similar to HTML, elements are stored in a tree structure with parents and
 children. Elements can be added or removed to the tree, causing them to 
@@ -278,6 +286,14 @@ class PolygonElement : UIElement {
     void setLineColor(colorT color);
 
     protected:
+    // virtual functions passed from base class to subclasses
+    virtual void renderSelf();
+    virtual bool isClicked(int x, int y);
+
+    // internal members passed from base class to subclasses
+    int xPos, yPos;
+
+    // new internal members
     colorT fillColor = defaultFill, lineColor = defaultLine;
 };
 
@@ -304,7 +320,12 @@ class RectangleElement : PolygonElement {
     int getWidth();
     int getHeight();
 
-    private:
+    protected:
+    // function overrides
+    void renderSelf();
+    bool isClicked(int x, int y);
+
+    // new internal members
     int width, height;
 };
 
@@ -328,9 +349,13 @@ class CircleElement : PolygonElement {
     CircleElement(int x, int y, int r, colorT fill, colorT line);
 
     void setRadius(int r);
-    void getRadius();
+    int getRadius();
 
-    private:
+    protected:
+    // function overrides
+    void renderSelf();
+
+    // new internal members
     int radius;
 };
 
@@ -350,6 +375,14 @@ class TextElement : UIElement {
     void setFontColor(colorT c);
 
     protected:
+    // virtual functions passed from base class to subclasses
+    virtual void renderSelf();
+    virtual bool isClicked(int x, int y);
+
+    // internal members passed from base class to subclasses
+    int xPos, yPos;
+
+    // new internal members
     colorT fontColor;
 };
 
@@ -374,10 +407,15 @@ class StringElement : TextElement {
     StringElement(int x, int y, stringT s);
     StringElement(int x, int y, stringT s, colorT c);
 
+    // member access/assignment
     void setString(stringT s);
     stringT getString();
 
-    private:
+    protected:
+    // function overrides
+    void renderSelf();
+
+    // new internal members
     stringT textString;
 };
 
@@ -398,7 +436,11 @@ class ValueElement : TextElement {
     ValueElement(int x, int y, int (*func)());
     ValueElement(int x, int y, int (*func)(), colorT c);
 
-    private:
+    protected:
+    // function overrides
+    void renderSelf();
+
+    // new internal members
     int (*valueFunction)();
 };
 
@@ -421,10 +463,16 @@ class SpriteElement : UIElement {
     SpriteElement(int x, int y, int w, int h);
     SpriteElement(int x, int y, int w, int h, colorT** p);
 
+    // member assignment
     void resize(int w, int h);
     void setPattern(colorT** p);
 
-    private:
+    protected:
+    // function overrides
+    void renderSelf();
+    bool isClicked(int x, int y);
+
+    // new internal members
     int width, height;
     colorT** pattern;
 };
