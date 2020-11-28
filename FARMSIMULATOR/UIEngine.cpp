@@ -1,5 +1,8 @@
 #include "UIEngine.h"
 
+colorT defaultFill = LCD.Black;
+colorT defaultLine = LCD.White;
+
 /* 
 Member functions for UIElement 
 Written by Thomas Li 
@@ -187,6 +190,9 @@ RectangleElement::RectangleElement(int x, int y, int w, int h) {
     yPos = y;
     width = w;
     height = h;
+
+    fillColor = defaultFill;
+    lineColor = defaultLine;
 }
 RectangleElement::RectangleElement(int x, int y, int w, int h, colorT fill, colorT line) {
     // assign members
@@ -202,11 +208,11 @@ RectangleElement::RectangleElement(int x, int y, int w, int h, colorT fill, colo
 // render prodecure override
 void RectangleElement::renderSelf() {
     // fill rectangle with given dimensions and color
-    LCD.SetFontColor(fillColor);
+    LCD.SetDrawColor(fillColor);
     LCD.FillRectangle(xPos, yPos, width, height);
     // draw rectangle border if line color differs from fill color
     if (fillColor != lineColor) {
-        LCD.SetFontColor(lineColor);
+        LCD.SetDrawColor(lineColor);
         LCD.DrawRectangle(xPos, yPos, width, height);
     }
 }
@@ -235,6 +241,8 @@ CircleElement::CircleElement(int x, int y, int r) {
     xPos = x;
     yPos = y;
     radius = r;
+    fillColor = defaultFill;
+    lineColor = defaultLine;
 }
 CircleElement::CircleElement(int x, int y, int r, colorT fill, colorT line) {
     xPos = x;
@@ -247,11 +255,11 @@ CircleElement::CircleElement(int x, int y, int r, colorT fill, colorT line) {
 // render procedure override
 void CircleElement::renderSelf() {
     // fill circle with given dimensions and color
-    LCD.SetFontColor(fillColor);
+    LCD.SetDrawColor(fillColor);
     LCD.FillCircle(xPos, yPos, radius);
     // draw circle border if line color differs from fill color
     if (fillColor != lineColor) {
-        LCD.SetFontColor(lineColor);
+        LCD.SetDrawColor(lineColor);
         LCD.DrawCircle(xPos, yPos, radius);
     }
 }
@@ -281,6 +289,7 @@ StringElement::StringElement(int x, int y, stringT s) {
     xPos = x;
     yPos = y;
     textString = s;
+    fontColor = defaultLine;
 }
 StringElement::StringElement(int x, int y, stringT s, colorT c) {
     xPos = x;
@@ -310,6 +319,7 @@ ValueElement::ValueElement(int x, int y, int (*func)()) {
     xPos = x;
     yPos = y;
     valueFunction = func;
+    fontColor = defaultLine;
 }
 ValueElement::ValueElement(int x, int y, int (*func)(), colorT c) {
     xPos = x;

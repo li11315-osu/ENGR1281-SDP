@@ -1,15 +1,27 @@
 #include "FEHLCD.h"
+#include "UIElements.h"
 
 /**
- * Entry point to the application.
+ * Entry point to the application
  * 
  * @returns status code of program exit
  */
 int main() {
-    LCD.Clear();
-    LCD.WriteLine("Hello World!");
+    // keep track of touch coordinates
+    int x, y;
+    // add main menu to screen
+    Screen->addChild(MainMenu);
+    // start program loop
     while (1) {
-        // Run forever
+        // clear and re-render screen
+        LCD.Clear();
+        Screen->render();
+
+        // wait for touch
+        while (!LCD.Touch(&x, &y)) {}
+
+        // respond to touch
+        Screen->handleClick(x, y);
     }
     return 0;
 }

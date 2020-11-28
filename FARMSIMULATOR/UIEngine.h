@@ -3,9 +3,6 @@
 typedef FEHLCD::FEHLCDColor colorT;
 typedef char* stringT;
 
-colorT defaultFill = LCD.Black;
-colorT defaultLine = LCD.White;
-
 /*
 Proteus UI Engine 
 Created 11/25/2020
@@ -280,7 +277,7 @@ used for both rectangles and circles. This class is not intended
 to be used on its own but rather to serve as a base for 
 RectangleElement and CircleElement
 */
-class PolygonElement : UIElement {
+class PolygonElement : public UIElement {
     public:
     void setFillColor(colorT color);
     void setLineColor(colorT color);
@@ -294,7 +291,7 @@ class PolygonElement : UIElement {
     int xPos, yPos;
 
     // new internal members
-    colorT fillColor = defaultFill, lineColor = defaultLine;
+    colorT fillColor, lineColor;
 };
 
 /*
@@ -311,7 +308,7 @@ and color, and overrides the isClicked function to return true if
 the location of the click is within the bounds of the rectangle as
 determined by the position and dimensions
 */
-class RectangleElement : PolygonElement {
+class RectangleElement : public PolygonElement {
     public:
     RectangleElement(int x, int y, int w, int h);
     RectangleElement(int x, int y, int w, int h, colorT fill, colorT line);
@@ -343,7 +340,7 @@ the stored position with the stored dimensions and color
 An override for the isClicked function hasn't been implemented since
 we probably aren't going to use any circular buttons
 */
-class CircleElement : PolygonElement {
+class CircleElement : public PolygonElement {
     public:
     CircleElement(int x, int y, int r);
     CircleElement(int x, int y, int r, colorT fill, colorT line);
@@ -370,7 +367,7 @@ subclasses that involve writing text to the screen, which in this case
 includes StringElement and ValueElement, and adds attributes common to 
 all such classes, which in this case includes the font color
 */
-class TextElement : UIElement {
+class TextElement : public UIElement {
     public:
     void setFontColor(colorT c);
 
@@ -402,7 +399,7 @@ detection for buttons will most likely be handled by the rectangle
 portion of the button rather than the text portion so I figured it 
 wouldn't be worth the effort
 */
-class StringElement : TextElement {
+class StringElement : public TextElement {
     public:
     StringElement(int x, int y, stringT s);
     StringElement(int x, int y, stringT s, colorT c);
@@ -431,7 +428,7 @@ the function pointer and font color, and overrides the renderSelf function
 to write the return value of the value function to the screen at the 
 stored position with the stored font color 
 */
-class ValueElement : TextElement {
+class ValueElement : public TextElement {
     public:
     ValueElement(int x, int y, int (*func)());
     ValueElement(int x, int y, int (*func)(), colorT c);
@@ -458,7 +455,7 @@ and overrides the isClicked function to return true if the click falls
 within the bounds of the sprite as determined by the position and dimensions.
 
 */
-class SpriteElement : UIElement {
+class SpriteElement : public UIElement {
     public:
     SpriteElement(int x, int y, int w, int h);
     SpriteElement(int x, int y, int w, int h, colorT** p);
