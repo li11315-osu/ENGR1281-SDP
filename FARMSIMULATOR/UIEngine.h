@@ -256,10 +256,11 @@ class UIElement {
         struct ElementListNode {
             UIElement* elementPtr = nullptr;
             ElementListNode* next = nullptr;
+            ElementListNode* prev = nullptr;
         };
 
         ElementListNode* head = nullptr;
-        // ElementListNode* tail = nullptr;
+        ElementListNode* tail = nullptr;
     };
 
     ElementList* children = new ElementList();

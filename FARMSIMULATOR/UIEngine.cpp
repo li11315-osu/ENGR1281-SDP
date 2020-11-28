@@ -86,21 +86,18 @@ Written by Thomas Li
 11/27/2020 
 */
 void UIElement::ElementList::addElement(UIElement* element) {
-    // set head to point to element if head is null
+    // set element as both head and tail if list is empty
     if (!head) {
         head = new ElementListNode;
         head->elementPtr = element;
-        
+        tail = head;
     }
+    // append element to tail of list otherwise
     else {
-        // otherwise, iterate through list until finding null node
-        ElementListNode* iter = head;
-        while (iter->next) {
-            iter = iter->next;
-        }
-        // and create new list node that points to element
-        iter->next = new ElementListNode;
-        iter->next->elementPtr = element;
+        tail->next = new ElementListNode;
+        tail->next->elementPtr = element;
+        tail->next->prev = tail;
+        tail = tail->next;
     }
 }
 bool UIElement::ElementList::removeElement(UIElement* element) {
@@ -109,6 +106,7 @@ bool UIElement::ElementList::removeElement(UIElement* element) {
     // if head points to element, replace head with next element
     if (head->elementPtr == element) {
         ElementListNode* newHead = head->next;
+        newHead->prev = nullptr;
         delete head;
         head = newHead;
         // return true to indicate element deletion
@@ -120,6 +118,7 @@ bool UIElement::ElementList::removeElement(UIElement* element) {
         if (iter->next->elementPtr == element) {
             // remove node from list if element found
             ElementListNode* newNext = iter->next->next;
+            newNext->prev = iter;
             delete iter->next;
             iter->next = newNext;
             // return true to indicate element deletion
@@ -141,16 +140,17 @@ void UIElement::ElementList::renderElements() {
     }
 }
 bool UIElement::ElementList::handleClick(int x, int y) {
-    // iterate through list, call handleClick function on each element
+    // iterate through list backwards, call handleClick function 
+    // on each element
     // return true if any calls return true
     // if list is empty, nothing happens
-    ElementListNode* iter = head;
+    ElementListNode* iter = tail;
     while (iter) {
         if (iter->elementPtr->handleClick(x, y)) {
             return true;
         }
         else {
-            iter = iter->next;
+            iter = iter->prev;
         }
     }
     return false;
