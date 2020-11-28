@@ -6,7 +6,7 @@ typedef char* stringT;
 /*
 Proteus UI Engine 
 Created 11/25/2020
-Last Modified: 11/27/2020
+Last Modified: 11/28/2020
 
 With this game being heavily UI-dependent and the FEHLCD library, being 
 somewhat limited, I decided to try implementing a cheap knockoff of the 
@@ -16,9 +16,8 @@ and manage graphics.
 I'm not going to pretend this is good code by any circumstances. I thought 
 most of it up in the back of my head at around 1 AM on either Monday or Tuesday
 (it's been a while so I forget exactly what happened) and made changes on-the-fly 
-as needed with little proper planning. At this stage, I haven't even tested it yet
-so it could very well fall apart the moment I try to use it, but hopefully it 
-works as intended.
+as needed with little proper planning. The documentation's also a bit of a mess
+but at least everything seems to be working as intended so far
 
 Similar to HTML, elements are stored in a tree structure with parents and
 children. Elements can be added or removed to the tree, causing them to 
@@ -299,7 +298,7 @@ class PolygonElement : public UIElement {
 RectangleElement class
 Written By Thomas Li
 Created 11/25/2020 
-Last Modified 11/25/2020
+Last Modified 11/28/2020
 
 This class inherits from PolygonElement, adds members for tracking
 width and height along with constructors that along width, height, 
@@ -311,7 +310,12 @@ determined by the position and dimensions
 */
 class RectangleElement : public PolygonElement {
     public:
+    // all constructors require position and dimensions to be specified
+    // colors can be left at default values
     RectangleElement(int x, int y, int w, int h);
+    // or a single color can be specified for both line and fill
+    RectangleElement(int x, int y, int w, int h, colorT c);
+    // or different colors can be specified
     RectangleElement(int x, int y, int w, int h, colorT fill, colorT line);
     
     void setDimensions(int w, int h);
@@ -331,7 +335,7 @@ class RectangleElement : public PolygonElement {
 CircleElement class
 Written By Thomas Li
 Created 11/25/2020 
-Last Modified 11/25/2020
+Last Modified 11/28/2020
 
 This class inherits from PolygonElement, adds members for tracking
 radius along with a constructor which can be used to specify radius
@@ -343,7 +347,12 @@ we probably aren't going to use any circular buttons
 */
 class CircleElement : public PolygonElement {
     public:
+    // position and size needs to be specified in constructor
+    // colors can be left at default values
     CircleElement(int x, int y, int r);
+    // or a single color can be assigned for both fill and line
+    CircleElement(int x, int y, int r, colorT c);
+    // or different colors can be assigned
     CircleElement(int x, int y, int r, colorT fill, colorT line);
 
     void setRadius(int r);
@@ -402,6 +411,8 @@ wouldn't be worth the effort
 */
 class StringElement : public TextElement {
     public:
+    // position and text string need to be specified by constructor
+    // font color can be specified or left at default value
     StringElement(int x, int y, stringT s);
     StringElement(int x, int y, stringT s, colorT c);
 
@@ -431,6 +442,8 @@ stored position with the stored font color
 */
 class ValueElement : public TextElement {
     public:
+    // position and function pointer need to be specified by constructor
+    // color can be specified or left at default
     ValueElement(int x, int y, int (*func)());
     ValueElement(int x, int y, int (*func)(), colorT c);
 

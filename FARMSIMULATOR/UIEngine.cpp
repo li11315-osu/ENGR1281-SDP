@@ -194,6 +194,16 @@ RectangleElement::RectangleElement(int x, int y, int w, int h) {
     fillColor = defaultFill;
     lineColor = defaultLine;
 }
+RectangleElement::RectangleElement(int x, int y, int w, int h, colorT c) {
+    // assign members
+    xPos = x;
+    yPos = y;
+    width = w;
+    height = h;
+
+    fillColor = c;
+    lineColor = c;
+}
 RectangleElement::RectangleElement(int x, int y, int w, int h, colorT fill, colorT line) {
     // assign members
     xPos = x;
@@ -243,6 +253,13 @@ CircleElement::CircleElement(int x, int y, int r) {
     radius = r;
     fillColor = defaultFill;
     lineColor = defaultLine;
+}
+CircleElement::CircleElement(int x, int y, int r, colorT c) {
+    xPos = x;
+    yPos = y;
+    radius = r;
+    fillColor = c;
+    lineColor = c;
 }
 CircleElement::CircleElement(int x, int y, int r, colorT fill, colorT line) {
     xPos = x;
