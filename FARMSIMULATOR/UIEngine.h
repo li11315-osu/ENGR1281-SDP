@@ -281,6 +281,7 @@ class PolygonElement : public UIElement {
     public:
     void setFillColor(colorT color);
     void setLineColor(colorT color);
+    void setColor(colorT color); // apply color to both fill and line
 
     protected:
     // virtual functions passed from base class to subclasses

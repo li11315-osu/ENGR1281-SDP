@@ -173,6 +173,11 @@ Written by Thomas Li
 // single-member assignments, fairly self-explanatory
 void PolygonElement::setFillColor(colorT color) { fillColor = color; }
 void PolygonElement::setLineColor(colorT color) { lineColor = color; }
+// multi-member assignment - set line and fill to same color
+void PolygonElement::setColor(colorT color) {
+    fillColor = color;
+    lineColor = color;
+}
 
 // virtual functions - to be overridden by subclasses
 void PolygonElement::renderSelf() { }
