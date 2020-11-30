@@ -106,7 +106,7 @@ bool UIElement::ElementList::removeElement(UIElement* element) {
     // if head points to element, replace head with next element
     if (head->elementPtr == element) {
         ElementListNode* newHead = head->next;
-        newHead->prev = nullptr;
+        if (newHead) newHead->prev = nullptr;
         delete head;
         head = newHead;
         // return true to indicate element deletion
@@ -118,8 +118,8 @@ bool UIElement::ElementList::removeElement(UIElement* element) {
         if (iter->next->elementPtr == element) {
             // remove node from list if element found
             ElementListNode* newNext = iter->next->next;
-            newNext->prev = iter;
-            delete iter->next;
+            if (newNext) newNext->prev = iter;
+            //delete iter->next;
             iter->next = newNext;
             // return true to indicate element deletion
             return true;

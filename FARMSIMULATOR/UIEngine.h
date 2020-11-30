@@ -6,7 +6,7 @@ typedef char* stringT;
 /*
 Proteus UI Engine 
 Created 11/25/2020
-Last Modified: 11/28/2020
+Last Modified: 11/29/2020
 
 With this game being heavily UI-dependent and the FEHLCD library, being 
 somewhat limited, I decided to try implementing a cheap knockoff of the 
@@ -269,7 +269,7 @@ class UIElement {
 PolygonElement class
 Written By Thomas Li
 Created 11/25/2020 
-Last Modified 11/25/2020
+Last Modified 11/29/2020
 
 This class inherits from UIElement and adds members for tracking
 the fill color and line color of the element, attributes which are

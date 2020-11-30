@@ -9,19 +9,26 @@
 int main() {
     // keep track of touch coordinates
     int x, y;
+
+    // initialize UI elements
+    initUI();
     // add main menu to screen
     Screen->addChild(MainMenu);
+    // render screen
+    LCD.Clear();
+    Screen->render();
+
     // start program loop
     while (1) {
-        // clear and re-render screen
-        LCD.Clear();
-        Screen->render();
-
         // wait for touch
         while (!LCD.Touch(&x, &y)) {}
 
         // respond to touch
-        Screen->handleClick(x, y);
+        if (Screen->handleClick(x, y)) {
+            // clear and re-render screen if needed
+            LCD.Clear();
+            Screen->render();
+        }
     }
     return 0;
 }
