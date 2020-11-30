@@ -7,6 +7,7 @@ UIElement* Screen = new UIElement;
 // global pointers to other elements
 UIElement* MainMenu;
 UIElement* CreditsPage;
+UIElement* CurrentPage;
 
 // prototypes for element intialization functions
 UIElement* getBackground1();
@@ -18,10 +19,13 @@ RectangleElement* getStandardButton(int x, int y, int w, stringT label, void (*h
 UIElement* getMainMenu();
 UIElement* getCreditsPage();
 
+void switchToPage(UIElement* page);
+
 // function to initialize global element pointers
 void initUI() {
     MainMenu = getMainMenu();
-    CreditsPage= getCreditsPage();
+    CreditsPage = getCreditsPage();
+    CurrentPage = nullptr;
 }
 
 // definitions for element intialization functions
@@ -60,7 +64,7 @@ RectangleElement* getStandardTitle(int x, int y, int w, stringT label) {
     return titleElement;
 }
 // body text
-RectangleElement* getStandardTitle(int x, int y, int w, int h, stringT message) {
+RectangleElement* getStandardBody(int x, int y, int w, int h, stringT message) {
     // set standard element parameters
     int padding = 15; // pixels between shape border and text
     colorT panelColor = LCD.Black;
@@ -116,8 +120,7 @@ UIElement* getMainMenu() {
     // add credits button
     mainMenu->addChild(getStandardButton(20, 189, 120, "Credits", [] {
         // on click: switch to credits page
-        Screen->removeChild(MainMenu);
-        Screen->addChild(CreditsPage);
+        switchToPage(CreditsPage);
     }));
 
     // return the menu element pointer
@@ -138,4 +141,11 @@ UIElement* getCreditsPage() {
 
     // return element pointer
     return creditsPage;
+}
+
+// switch between pages
+void switchToPage(UIElement* page) {
+    if (CurrentPage) Screen->removeChild(CurrentPage);
+    Screen->addChild(page);
+    CurrentPage = page;
 }

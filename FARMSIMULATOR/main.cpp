@@ -13,7 +13,7 @@ int main() {
     // initialize UI elements
     initUI();
     // add main menu to screen
-    Screen->addChild(MainMenu);
+    switchToPage(MainMenu);
     // render screen
     LCD.Clear();
     Screen->render();
