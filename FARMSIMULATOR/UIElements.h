@@ -16,7 +16,6 @@ UIElement* CurrentPage;
 UIElement* getBackground1();
 
 RectangleElement* getStandardTitle(int x, int y, int w, stringT label);
-RectangleElement* getStandardBody(int x, int y, int w, int h, stringT message);
 RectangleElement* getStandardButton(int x, int y, int w, stringT label, void (*handler)());
 
 UIElement* getMainMenu();
@@ -71,21 +70,6 @@ RectangleElement* getStandardTitle(int x, int y, int w, stringT label) {
     // return element pointer
     return titleElement;
 }
-// body text
-RectangleElement* getStandardBody(int x, int y, int w, int h, stringT message) {
-    // set standard element parameters
-    int padding = 15; // pixels between shape border and text
-    colorT panelColor = LCD.Black;
-    colorT textColor = LCD.White;
-
-    // create element pointer
-    RectangleElement* bodyElement = new RectangleElement(x, y, w, h, panelColor);
-    // add body text
-    bodyElement->addChild(new StringElement(x+padding, y+padding, message, textColor));
-
-    // return element pointer
-    return bodyElement;
-}
 // button
 RectangleElement* getStandardButton(int x, int y, int w, stringT label, void (*handler)()) {
     // set standard element parameters
@@ -124,13 +108,13 @@ UIElement* getMainMenu() {
     // add instructions button
     mainMenu->addChild(getStandardButton(20, 113, 120, "Instructions", [] {
         // on click: switch to instructions page
-        switchToPage(instructionsPage);
+        switchToPage(InstructionsPage);
     }));
 
     // add statistics button
     mainMenu->addChild(getStandardButton(20, 151, 120, "Statistics", [] {
         // on click: switch to statistics page
-        switchToPage(statisticsPage);
+        switchToPage(StatisticsPage);
     }));
 
     // add credits button
@@ -148,12 +132,21 @@ UIElement* getCreditsPage() {
     UIElement* creditsPage = new UIElement;
 
     // add background
+    creditsPage->addChild(getBackground1());
 
     // add title element
+    creditsPage->addChild(getStandardTitle(20, 20, 280, "Credits"));
 
     // add body
+    creditsPage->addChild(new RectangleElement(20, 73, 280, 110, LCD.Black));
+    creditsPage->addChild(new StringElement(30, 85, "Drew Ripberger - ", LCD.White));
+    creditsPage->addChild(new StringElement(30, 120, "Annie Getts - ", LCD.White));
+    creditsPage->addChild(new StringElement(30, 155, "Thomas Li - ", LCD.White));
 
     // add return button
+    creditsPage->addChild(getStandardButton(20, 190, 120, "Return", [] {
+        switchToPage(MainMenu);
+    }));
 
     // return element pointer
     return creditsPage;
@@ -161,7 +154,22 @@ UIElement* getCreditsPage() {
 // instructions page
 UIElement* getInstructionsPage() {
     // create element pointer
-    UIElement* instructionsPage;
+    UIElement* instructionsPage = new UIElement;
+
+    // add background
+    instructionsPage->addChild(getBackground1());
+
+    // add title element
+    instructionsPage->addChild(getStandardTitle(20, 20, 280, "Instructions"));
+
+    // add body
+    instructionsPage->addChild(new RectangleElement(20, 73, 280, 110, LCD.Black));
+    instructionsPage->addChild(new StringElement(30, 85, "Insert Instructions Here", LCD.White));
+
+    // add return button
+    instructionsPage->addChild(getStandardButton(20, 190, 120, "Return", [] {
+        switchToPage(MainMenu);
+    }));
 
     // return element pointer
     return instructionsPage;
@@ -169,7 +177,22 @@ UIElement* getInstructionsPage() {
 // statistics page
 UIElement* getStatisticsPage() {
     // create element pointer
-    UIElement* statisticsPage;
+    UIElement* statisticsPage = new UIElement;
+
+    // add background
+    statisticsPage->addChild(getBackground1());
+
+    // add title element
+    statisticsPage->addChild(getStandardTitle(20, 20, 280, "Statistics"));
+
+    // add body
+    statisticsPage->addChild(new RectangleElement(20, 73, 280, 110, LCD.Black));
+    statisticsPage->addChild(new StringElement(30, 85, "StatisticName: ", LCD.White));
+
+    // add return button
+    statisticsPage->addChild(getStandardButton(20, 190, 120, "Return", [] {
+        switchToPage(MainMenu);
+    }));
 
     // return element pointer
     return statisticsPage;
