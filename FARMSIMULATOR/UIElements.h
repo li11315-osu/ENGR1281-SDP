@@ -187,7 +187,31 @@ UIElement* getStatisticsPage() {
 
     // add body
     statisticsPage->addChild(new RectangleElement(20, 73, 280, 110, LCD.Black));
-    statisticsPage->addChild(new StringElement(30, 85, "StatisticName: ", LCD.White));
+
+    statisticsPage->addChild(new StringElement(30, 85, "Max Days Survived: ", LCD.White));
+    statisticsPage->addChild(new ValueElement(220, 85, [] {
+        return 0;
+    }, LCD.White));
+
+    statisticsPage->addChild(new StringElement(30, 102, "Total Money Earned: ", LCD.White));
+    statisticsPage->addChild(new ValueElement(220, 102, [] {
+        return 0;
+    }, LCD.White));
+
+    statisticsPage->addChild(new StringElement(30, 119, "Total Money Lost: ", LCD.White));
+    statisticsPage->addChild(new ValueElement(220, 119, [] {
+        return 0;
+    }, LCD.White));
+
+    statisticsPage->addChild(new StringElement(30, 136, "Carrots Planted: ", LCD.White));
+    statisticsPage->addChild(new ValueElement(220, 136, [] {
+        return 0;
+    }, LCD.White));
+
+    statisticsPage->addChild(new StringElement(30, 153, "Carrots Harvested: ", LCD.White));
+    statisticsPage->addChild(new ValueElement(220, 153, [] {
+        return 0;
+    }, LCD.White));
 
     // add return button
     statisticsPage->addChild(getStandardButton(20, 190, 120, "Return", [] {
