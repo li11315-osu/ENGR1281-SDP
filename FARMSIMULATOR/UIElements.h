@@ -7,6 +7,9 @@ UIElement* Screen = new UIElement;
 // global pointers to other elements
 UIElement* MainMenu;
 UIElement* CreditsPage;
+UIElement* StatisticsPage;
+UIElement* InstructionsPage;
+
 UIElement* CurrentPage;
 
 // prototypes for element intialization functions
@@ -18,6 +21,8 @@ RectangleElement* getStandardButton(int x, int y, int w, stringT label, void (*h
 
 UIElement* getMainMenu();
 UIElement* getCreditsPage();
+UIElement* getStatisticsPage();
+UIElement* getInstructionsPage();
 
 void switchToPage(UIElement* page);
 
@@ -25,6 +30,9 @@ void switchToPage(UIElement* page);
 void initUI() {
     MainMenu = getMainMenu();
     CreditsPage = getCreditsPage();
+    InstructionsPage = getInstructionsPage();
+    StatisticsPage = getStatisticsPage();
+
     CurrentPage = nullptr;
 }
 
@@ -109,13 +117,21 @@ UIElement* getMainMenu() {
     mainMenu->addChild(getStandardTitle(20, 20, 190, "Farm Simulator 2020"));
 
     // add start button
-    mainMenu->addChild(getStandardButton(20, 75, 120, "Start", [] {}));
+    mainMenu->addChild(getStandardButton(20, 75, 120, "Start", [] {
+        // on click: start game
+    }));
 
     // add instructions button
-    mainMenu->addChild(getStandardButton(20, 113, 120, "Instructions", [] {}));
+    mainMenu->addChild(getStandardButton(20, 113, 120, "Instructions", [] {
+        // on click: switch to instructions page
+        switchToPage(instructionsPage);
+    }));
 
     // add statistics button
-    mainMenu->addChild(getStandardButton(20, 151, 120, "Statistics", [] {}));
+    mainMenu->addChild(getStandardButton(20, 151, 120, "Statistics", [] {
+        // on click: switch to statistics page
+        switchToPage(statisticsPage);
+    }));
 
     // add credits button
     mainMenu->addChild(getStandardButton(20, 189, 120, "Credits", [] {
@@ -141,6 +157,22 @@ UIElement* getCreditsPage() {
 
     // return element pointer
     return creditsPage;
+}
+// instructions page
+UIElement* getInstructionsPage() {
+    // create element pointer
+    UIElement* instructionsPage;
+
+    // return element pointer
+    return instructionsPage;
+}
+// statistics page
+UIElement* getStatisticsPage() {
+    // create element pointer
+    UIElement* statisticsPage;
+
+    // return element pointer
+    return statisticsPage;
 }
 
 // switch between pages
