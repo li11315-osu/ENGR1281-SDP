@@ -23,6 +23,7 @@ UIElement* getCreditsPage();
 UIElement* getStatisticsPage();
 UIElement* getInstructionsPage();
 
+void playGame();
 void switchToPage(UIElement* page);
 
 // function to initialize global element pointers
@@ -103,6 +104,7 @@ UIElement* getMainMenu() {
     // add start button
     mainMenu->addChild(getStandardButton(20, 75, 120, "Start", [] {
         // on click: start game
+        playGame();
     }));
 
     // add instructions button
@@ -227,4 +229,10 @@ void switchToPage(UIElement* page) {
     if (CurrentPage) Screen->removeChild(CurrentPage);
     Screen->addChild(page);
     CurrentPage = page;
+}
+
+void playGame() {
+    UIElement* placeholder = new UIElement;
+    placeholder->addChild(new StringElement(100, 100, "Play Game Here", LCD.White));
+    switchToPage(placeholder);
 }
