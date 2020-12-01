@@ -99,7 +99,7 @@ UIElement* getMainMenu() {
     mainMenu->addChild(getBackground1());
 
     // add title panel to menu
-    mainMenu->addChild(getStandardTitle(20, 20, 190, "Farm Simulator 2020"));
+    mainMenu->addChild(getStandardTitle(20, 20, 190, "Meadow Valley"));
 
     // add start button
     mainMenu->addChild(getStandardButton(20, 75, 120, "Start", [] {
@@ -169,7 +169,7 @@ UIElement* getInstructionsPage() {
     instructionsPage->addChild(new StringElement(30, 85, "Welcome to your farm! Buy &", LCD.White));
     instructionsPage->addChild(new StringElement(30, 102, "plant seeds, watch them grow,", LCD.White));
     instructionsPage->addChild(new StringElement(30, 119, "sell the produce, and repeat!", LCD.White));
-    instructionsPage->addChild(new StringElement(30, 136, "Each day brings new twists. Good luck!", LCD.White));
+    instructionsPage->addChild(new StringElement(30, 136, "Each day brings new twists!", LCD.White));
 
     // add return button
     instructionsPage->addChild(getStandardButton(20, 190, 120, "Return", [] {
@@ -237,5 +237,8 @@ void switchToPage(UIElement* page) {
 void playGame() {
     UIElement* placeholder = new UIElement;
     placeholder->addChild(new StringElement(100, 100, "Play Game Here", LCD.White));
+    placeholder->addChild(getStandardButton(20, 190, 120, "Return", [] {
+        switchToPage(MainMenu);
+    }));
     switchToPage(placeholder);
 }
