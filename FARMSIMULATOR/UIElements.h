@@ -166,9 +166,12 @@ UIElement* getInstructionsPage() {
 
     // add body
     instructionsPage->addChild(new RectangleElement(20, 73, 280, 110, LCD.Black));
-    instructionsPage->addChild(new StringElement(30, 85, "Welcome to your farm! Touch plant seeds to purchase them, ", LCD.White));
-    instructionsPage->addChild(new StringElement(30, 102, "plots to plant seeds on them, and crop icons to sell them when ", LCD.White));
-    instructionsPage->addChild(new StringElement(30, 119, "they're full grown. Each day brings new surprises. Good luck! ", LCD.White));
+    instructionsPage->addChild(new StringElement(30, 85, "Welcome to your farm! Touch", LCD.White));
+    instructionsPage->addChild(new StringElement(30, 102, "seeds to purchase them, plots", LCD.White));
+    instructionsPage->addChild(new StringElement(30, 119, "to plant seeds on them, and ", LCD.White));
+    instructionsPage->addChild(new StringElement(30, 136, "crop icons to sell them when ", LCD.White));
+    instructionsPage->addChild(new StringElement(30, 153, "they're full grown. Each day ", LCD.White));
+    instructionsPage->addChild(new StringElement(30, 170, "brings new surprises. Good luck! ", LCD.White));
 
     // add return button
     instructionsPage->addChild(getStandardButton(20, 190, 120, "Return", [] {
