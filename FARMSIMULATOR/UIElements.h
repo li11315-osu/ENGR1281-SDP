@@ -10,6 +10,9 @@ UIElement* CreditsPage;
 UIElement* StatisticsPage;
 UIElement* InstructionsPage;
 
+UIElement* DifficultySelection;
+UIElement* GameMenu;
+
 UIElement* CurrentPage;
 
 // prototypes for element intialization functions
@@ -23,6 +26,9 @@ UIElement* getCreditsPage();
 UIElement* getStatisticsPage();
 UIElement* getInstructionsPage();
 
+UIElement* getDifficultySelection();
+UIElement* getGameMenu();
+
 void playGame();
 void switchToPage(UIElement* page);
 
@@ -32,6 +38,9 @@ void initUI() {
     CreditsPage = getCreditsPage();
     InstructionsPage = getInstructionsPage();
     StatisticsPage = getStatisticsPage();
+
+    DifficultySelection = getDifficultySelection();
+    GameMenu = getGameMenu();
 
     CurrentPage = nullptr;
 }
@@ -103,8 +112,8 @@ UIElement* getMainMenu() {
 
     // add start button
     mainMenu->addChild(getStandardButton(20, 75, 120, "Start", [] {
-        // on click: start game
-        playGame();
+        // on click: go to difficulty selection
+        switchToPage(DifficultySelection);
     }));
 
     // add instructions button
@@ -226,6 +235,51 @@ UIElement* getStatisticsPage() {
     // return element pointer
     return statisticsPage;
 }
+// difficulty selection
+UIElement* getDifficultySelection() {
+    // initialize element pointer
+    UIElement* difficultySelection = new UIElement;
+
+    // set background
+    difficultySelection->addChild(getBackground1());
+
+    // add title text
+    difficultySelection->addChild(getStandardTitle(20, 20, 280, "Select a Difficulty Level"));
+
+    // add buttons
+    RectangleElement* normalModeButton = getStandardButton(20, 90, 280, "Normal Mode", [] {
+        // on click: set game difficulty to normal mode, start game
+        playGame();
+    });
+    normalModeButton->setColor(LCD.Black);
+    difficultySelection->addChild(normalModeButton);
+
+    RectangleElement* chaosModeButton = getStandardButton(20, 130, 280, "Chaos Mode", [] {
+        // on click: set game difficulty to chaos mode, start game
+        playGame();
+    });
+    chaosModeButton->setColor(LCD.Black);
+    difficultySelection->addChild(chaosModeButton);
+
+    difficultySelection->addChild(getStandardButton(20, 190, 120, "Return", [] {
+        // on click: return to main menu
+        switchToPage(MainMenu);
+    }));
+
+    // return element pointer
+    return difficultySelection;
+}
+// game menu
+UIElement* getGameMenu() {
+    // initialize element pointer
+    UIElement* gameMenu = new UIElement;
+
+    // add placeholder text
+    gameMenu->addChild(new StringElement(100, 100, "Play Game Here", LCD.White));
+
+    // return element pointer
+    return gameMenu;
+}
 
 // switch between pages
 void switchToPage(UIElement* page) {
@@ -235,10 +289,7 @@ void switchToPage(UIElement* page) {
 }
 
 void playGame() {
-    UIElement* placeholder = new UIElement;
-    placeholder->addChild(new StringElement(100, 100, "Play Game Here", LCD.White));
-    placeholder->addChild(getStandardButton(20, 190, 120, "Return", [] {
-        switchToPage(MainMenu);
-    }));
-    switchToPage(placeholder);
+    // initialize game state
+
+    switchToPage(GameMenu); // go to game menu
 }
