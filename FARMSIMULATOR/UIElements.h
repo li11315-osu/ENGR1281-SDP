@@ -14,6 +14,7 @@ UIElement* CurrentPage;
 
 // prototypes for element intialization functions
 UIElement* getBackground1();
+UIElement* getBackground2();
 
 RectangleElement* getStandardTitle(int x, int y, int w, stringT label);
 RectangleElement* getStandardButton(int x, int y, int w, stringT label, void (*handler)());
@@ -51,6 +52,14 @@ UIElement* getBackground1() {
     bg->addChild(new CircleElement(270, 175, 25, LCD.Black));
     bg->addChild(new CircleElement(205, 180, 8, LCD.Gray));
     bg->addChild(new CircleElement(270, 175, 10, LCD.Gray));
+    return bg;
+}
+
+UIElement* getBackground2() {
+    UIElement* bg = new UIElement;
+    // draw scene involving a tractor on a grassy field under a blue sky
+    bg->addChild(new RectangleElement(0, 0, 320, 120, LCD.Green));
+    bg->addChild(new RectangleElement(0, 120, 320, 120, LCD.Green));
     return bg;
 }
 
