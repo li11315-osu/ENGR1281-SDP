@@ -57,7 +57,7 @@ UIElement* getBackground1() {
 
 UIElement* getBackground2() {
     UIElement* bg = new UIElement;
-    // draw scene involving a tractor on a grassy field under a blue sky
+    // make background green to represent grass 
     bg->addChild(new RectangleElement(0, 0, 320, 120, LCD.Green));
     bg->addChild(new RectangleElement(0, 120, 320, 120, LCD.Green));
     return bg;
