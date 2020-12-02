@@ -1,3 +1,6 @@
+#ifndef UIElements_H
+#define UIElements_H
+
 #include "UIEngine.h"
 #include "constants.h"
 
@@ -242,3 +245,5 @@ void playGame() {
     }));
     switchToPage(placeholder);
 }
+
+#endif // UIElements_H

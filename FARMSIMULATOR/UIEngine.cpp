@@ -1,3 +1,6 @@
+#ifndef UIEngine
+#define UIEngine
+
 #include "UIEngine.h"
 
 colorT defaultFill = LCD.Black;
@@ -396,3 +399,5 @@ void SpriteElement::renderSelf() {
 bool SpriteElement::isClicked(int x, int y) {
     return x >= xPos && x < xPos + width && y >= yPos && y < yPos + height;
 }
+
+#endif //UIEngine

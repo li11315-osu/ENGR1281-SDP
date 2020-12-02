@@ -1,9 +1,8 @@
-#include "GameState.h"
-#include "FEHLCD.h"
-#include <iostream>
+#ifndef GameState
+#define GameState
 
-void GameState::test(){
-    LCD.Clear();
-    LCD.WriteLine("Hello!");
-    std::cout << "GameState class created!" << std::endl;
-}
+#include "GameState.h"
+#include "UIElements.h"
+
+
+#endif //GameState

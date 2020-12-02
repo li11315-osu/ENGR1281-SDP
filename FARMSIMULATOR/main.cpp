@@ -1,5 +1,6 @@
 #include "FEHLCD.h"
 #include "UIElements.h"
+#include "GameState.h"
 
 /**
  * Entry point to the application
@@ -7,6 +8,10 @@
  * @returns status code of program exit
  */
 int main() {
+
+    GameState state;
+    state.test();
+
     // keep track of touch coordinates
     int x, y;
 
