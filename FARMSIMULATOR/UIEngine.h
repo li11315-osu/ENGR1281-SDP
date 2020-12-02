@@ -1,3 +1,6 @@
+#ifndef UIEngine_H
+#define UIEngine_H
+
 #include "FEHLCD.h"
 
 typedef FEHLCD::FEHLCDColor colorT;
@@ -488,3 +491,4 @@ class SpriteElement : public UIElement {
     int width, height;
     colorT** pattern;
 };
+#endif //UIEngine_H
