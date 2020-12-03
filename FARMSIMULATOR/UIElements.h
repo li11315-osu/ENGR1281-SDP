@@ -2,6 +2,7 @@
 #define UIElements_H
 
 #include "UIEngine.h"
+#include "GameState.h"
 #include "constants.h"
 
 // global root element
