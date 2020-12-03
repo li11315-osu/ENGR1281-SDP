@@ -287,8 +287,10 @@ UIElement* getGameMenu() {
     // initialize element pointer
     UIElement* gameMenu = new UIElement;
 
+    GameState g;
+    stringT test = g.test();
     // add placeholder text
-    gameMenu->addChild(new StringElement(100, 100, "Play Game Here", LCD.White));
+    gameMenu->addChild(new StringElement(100, 100, test, LCD.White));
 
     // return element pointer
     return gameMenu;

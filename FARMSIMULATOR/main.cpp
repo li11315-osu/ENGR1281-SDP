@@ -9,9 +9,6 @@
  */
 int main() {
 
-    GameState state;
-    state.test();
-
     // keep track of touch coordinates
     int x, y;
 

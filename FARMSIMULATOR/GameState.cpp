@@ -1,11 +1,11 @@
 #ifndef GAMESTATE
 #define GAMESTATE
 
+#include <iostream>
 #include "GameState.h"
-// #include "UIElements.h"
 
-void GameState::test() {
-    //
+char* GameState::test() {
+   return "THIS IS A TEST";
 }
 
 #endif //GameState
