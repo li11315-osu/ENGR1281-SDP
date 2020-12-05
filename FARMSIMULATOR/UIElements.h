@@ -6,38 +6,67 @@
 #include "constants.h"
 
 // global pointer to state of current game
-GameState* G = nullptr;
+GameState* G = new GameState(0);
 
 // global root element
 UIElement* Screen = new UIElement;
 
 // global pointers to other elements
+// menu pages
 UIElement* MainMenu;
 UIElement* CreditsPage;
 UIElement* StatisticsPage;
 UIElement* InstructionsPage;
 
+// game pages
 UIElement* DifficultySelection;
 UIElement* GameMenu;
 
+// sub-panels for game menu
+UIElement* TopBar;
+UIElement* HomePanel;
+UIElement* PlotsPanel;
+
+// individual plot elements shown in plots panel
+std::vector<RectangleElement*> PlotElements;
+
+// keep track of currently-displayed menu page
 UIElement* CurrentPage;
 
 // prototypes for element intialization functions
+// backgrounds
 UIElement* getBackground1();
 UIElement* getBackground2();
 
+// helpers for standard menu elements
 RectangleElement* getStandardTitle(int x, int y, int w, stringT label);
 RectangleElement* getStandardButton(int x, int y, int w, stringT label, void (*handler)());
 
+// menu pages
 UIElement* getMainMenu();
 UIElement* getCreditsPage();
 UIElement* getStatisticsPage();
 UIElement* getInstructionsPage();
 
+// game pages
 UIElement* getDifficultySelection();
 UIElement* getGameMenu();
 
+// sub-panels for game menu
+UIElement* getTopBar();
+UIElement* getHomePanel();
+UIElement* getPlotsPanel();
+
+// individual plot elements in plots panel, rendered based on internal plots array
+// these elements will be re-initialized often so this function returns a value 
+// instead of a pointer to make memory management easier
+RectangleElement getPlotElement(int index);
+// helper function to keep plots panel reflective of internal data
+void updatePlotElements();
+
+// helper function to initialize game state and display game menu
 void playGame(int diff);
+// helper function to switch between menu pages
 void switchToPage(UIElement* page);
 
 // function to initialize global element pointers
@@ -49,6 +78,10 @@ void initUI() {
 
     DifficultySelection = getDifficultySelection();
     GameMenu = getGameMenu();
+
+    UIElement* getTopBar();
+    UIElement* getHomePanel();
+    UIElement* getPlotsPanel();
 
     CurrentPage = nullptr;
 }
@@ -290,10 +323,19 @@ UIElement* getGameMenu() {
     // initialize element pointer
     UIElement* gameMenu = new UIElement;
 
+    /*
     //GameState g;
     stringT test = G->test();
     // add placeholder text
     gameMenu->addChild(new StringElement(100, 100, test, LCD.White));
+    */
+
+    // add background
+    gameMenu->addChild(getBackground2());
+
+    // add top bar
+
+    // add body panel
 
     // return element pointer
     return gameMenu;
@@ -312,10 +354,7 @@ void switchToPage(UIElement* page) {
 
 void playGame(int diff) {
     // initialize game state
-    if (G) {
-        delete G;
-    }
-    G = new GameState(diff);
+    *G = GameState(diff);
 
     switchToPage(GameMenu); // go to game menu
 }
