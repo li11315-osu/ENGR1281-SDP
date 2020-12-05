@@ -33,6 +33,9 @@ RectangleElement* PlotElements[NUMBER_OF_PLOTS];
 // keep track of currently-displayed menu page
 UIElement* CurrentPage;
 
+// keep track of currently-displayed in-game menu panel
+UIElement* CurrentGamePanel;
+
 // prototypes for element intialization functions
 // backgrounds
 UIElement* getBackground1();
@@ -68,6 +71,8 @@ void updatePlotElements();
 void playGame(int diff);
 // helper function to switch between menu pages
 void switchToPage(UIElement* page);
+// helper function to switch between in-game UI panels
+void switchToPanel(UIElement* panel);
 
 // entity graphics
 CircleElement* getCoinSprite(int x, int y);
@@ -87,6 +92,7 @@ void initUI() {
     GameMenu = getGameMenu();
 
     CurrentPage = nullptr;
+    CurrentGamePanel = new UIElement;
 }
 
 // definitions for element intialization functions
@@ -339,8 +345,7 @@ UIElement* getGameMenu() {
     // add top bar
     gameMenu->addChild(TopBar);
 
-    // add body panel
-    gameMenu->addChild(HomePanel);
+    // body panel gets added/removed during game
 
     // return element pointer
     return gameMenu;
@@ -368,6 +373,7 @@ UIElement* getTopBar() {
 
     // add quit button
     topBar->addChild(getStandardButton(255, 5, 50, "Quit", [] {
+        // on click: return to main menu
         switchToPage(MainMenu);
     }));
 
@@ -379,6 +385,14 @@ UIElement* getHomePanel() {
     // initialize element pointer
     UIElement* homePanel = new UIElement;
 
+    // add listings for each crop type
+
+    // add button to go to plots
+    homePanel->addChild(getStandardButton(205, 50, 100, "View Plots", [] {
+        // on click: switch from home panel to plots panel
+        switchToPanel(PlotsPanel);
+    }));
+
     // return element pointer
     return homePanel;
 }
@@ -386,6 +400,14 @@ UIElement* getHomePanel() {
 UIElement* getPlotsPanel() {
     // initialize element pointer
     UIElement* plotsPanel = new UIElement;
+
+    // add pointers to individual plot elements
+
+    // add button to return to home panel
+    plotsPanel->addChild(getStandardButton(205, 50, 100, "Return", [] {
+        // on click: switch from plots panel to home panel
+        switchToPanel(HomePanel);
+    }));
 
     // return element pointer
     return plotsPanel;
@@ -433,11 +455,19 @@ void switchToPage(UIElement* page) {
     CurrentPage = page;
 }
 
+// switch between in-game menu panels
+void switchToPanel(UIElement* panel) {
+    GameMenu->addChild(panel);
+    if (CurrentGamePanel) GameMenu->removeChild(CurrentGamePanel);
+    CurrentGamePanel = panel;
+}
+
 void playGame(int diff) {
     // initialize game state
     *G = GameState(diff);
 
     switchToPage(GameMenu); // go to game menu
+    switchToPanel(HomePanel); 
 }
 
 #endif // UIElements_H
