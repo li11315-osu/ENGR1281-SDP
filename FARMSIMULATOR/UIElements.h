@@ -3,7 +3,7 @@
 
 #include "UIEngine.h"
 #include "GameState.h"
-#include "constants.h"
+// #include "constants.h"
 
 // global pointer to state of current game
 GameState* G = new GameState(0);
@@ -28,7 +28,7 @@ UIElement* HomePanel;
 UIElement* PlotsPanel;
 
 // individual plot elements shown in plots panel
-std::vector<RectangleElement*> PlotElements;
+RectangleElement* PlotElements[NUMBER_OF_PLOTS];
 
 // keep track of currently-displayed menu page
 UIElement* CurrentPage;
@@ -69,6 +69,9 @@ void playGame(int diff);
 // helper function to switch between menu pages
 void switchToPage(UIElement* page);
 
+// entity graphics
+CircleElement* getCoinSprite(int x, int y);
+
 // function to initialize global element pointers
 void initUI() {
     MainMenu = getMainMenu();
@@ -77,11 +80,11 @@ void initUI() {
     StatisticsPage = getStatisticsPage();
 
     DifficultySelection = getDifficultySelection();
-    GameMenu = getGameMenu();
 
-    UIElement* getTopBar();
-    UIElement* getHomePanel();
-    UIElement* getPlotsPanel();
+    TopBar = getTopBar();
+    HomePanel = getHomePanel();
+    PlotsPanel = getPlotsPanel();
+    GameMenu = getGameMenu();
 
     CurrentPage = nullptr;
 }
@@ -105,7 +108,7 @@ UIElement* getBackground1() {
 }
 
 UIElement* getBackground2() {
-    UIElement* bg = new UIElement;
+    UIElement* bg = new UIElement; 
     // make background green to represent grass 
     bg->addChild(new RectangleElement(0, 0, 320, 120, LCD.Green));
     bg->addChild(new RectangleElement(0, 120, 320, 120, LCD.Green));
@@ -334,16 +337,94 @@ UIElement* getGameMenu() {
     gameMenu->addChild(getBackground2());
 
     // add top bar
+    gameMenu->addChild(TopBar);
 
     // add body panel
+    gameMenu->addChild(HomePanel);
 
     // return element pointer
     return gameMenu;
 }
 // game menu elements
 // top bar
+UIElement* getTopBar() {
+    // initialize element pointer
+    UIElement* topBar = new UIElement;
+
+    // add bar
+    topBar->addChild(new RectangleElement(0, 0, 320, 40, LCD.Black));
+
+    // add tracker for current day
+    topBar->addChild(new StringElement(15, 15, "Day", LCD.White));
+    topBar->addChild(new ValueElement(50, 15, [] {
+        return G->curr_day;
+    }, LCD.White));
+
+    // add tracker for money
+    topBar->addChild(getCoinSprite(80, 13));
+    topBar->addChild(new ValueElement(100, 15, [] {
+        return G->coins;
+    }, LCD.White));
+
+    // add quit button
+    topBar->addChild(getStandardButton(255, 5, 50, "Quit", [] {
+        switchToPage(MainMenu);
+    }));
+
+    // return element pointer
+    return topBar;
+}
 // home panel
+UIElement* getHomePanel() {
+    // initialize element pointer
+    UIElement* homePanel = new UIElement;
+
+    // return element pointer
+    return homePanel;
+}
 // plots panel
+UIElement* getPlotsPanel() {
+    // initialize element pointer
+    UIElement* plotsPanel = new UIElement;
+
+    // return element pointer
+    return plotsPanel;
+}
+// individual plots
+RectangleElement getPlotElement(int index) {
+    // get size and dimensions
+    int plotWidth = 45;
+    int plotHeight = plotWidth;
+    int plotX = 20 + (50 * (index % 4));
+    int plotY = 50 + (50 * (index / 4));
+
+    // initialize element pointer
+    RectangleElement plotElement = RectangleElement(plotX, plotY, plotWidth, plotHeight);
+
+    // show indicator for crop type
+
+    // show indicator for remaining days
+
+    // return element pointer
+    return plotElement;
+}
+// re-initialize plot elements to account for changes in internal data
+void updatePlots() {
+    //
+}
+
+// graphical representation of in-game currency
+CircleElement* getCoinSprite(int x, int y) {
+    // draw white circle with gray 'c' in the middle, resembling a silver coin
+    // why not a gold coin? because I'm too lazy to use the expanded color selection
+    int radius = 8;
+
+    // x and y refer to top left corner, not center of circle
+    CircleElement* coinSprite = new CircleElement(x+radius, y+radius, radius, LCD.White, LCD.Gray);
+    coinSprite->addChild(new StringElement(x+3, y+3, "c", LCD.Gray));
+
+    return coinSprite;
+}
 
 // switch between pages
 void switchToPage(UIElement* page) {
