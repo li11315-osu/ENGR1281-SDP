@@ -5,6 +5,9 @@
 #include "GameState.h"
 #include "constants.h"
 
+// global pointer to state of current game
+GameState* G = nullptr;
+
 // global root element
 UIElement* Screen = new UIElement;
 
@@ -34,7 +37,7 @@ UIElement* getInstructionsPage();
 UIElement* getDifficultySelection();
 UIElement* getGameMenu();
 
-void playGame();
+void playGame(int diff);
 void switchToPage(UIElement* page);
 
 // function to initialize global element pointers
@@ -262,14 +265,14 @@ UIElement* getDifficultySelection() {
     // add buttons
     RectangleElement* normalModeButton = getStandardButton(20, 90, 280, "Normal Mode", [] {
         // on click: set game difficulty to normal mode, start game
-        playGame();
+        playGame(0);
     });
     normalModeButton->setColor(LCD.Black);
     difficultySelection->addChild(normalModeButton);
 
     RectangleElement* chaosModeButton = getStandardButton(20, 130, 280, "Chaos Mode", [] {
         // on click: set game difficulty to chaos mode, start game
-        playGame();
+        playGame(1);
     });
     chaosModeButton->setColor(LCD.Black);
     difficultySelection->addChild(chaosModeButton);
@@ -287,14 +290,18 @@ UIElement* getGameMenu() {
     // initialize element pointer
     UIElement* gameMenu = new UIElement;
 
-    GameState g;
-    stringT test = g.test();
+    //GameState g;
+    stringT test = G->test();
     // add placeholder text
     gameMenu->addChild(new StringElement(100, 100, test, LCD.White));
 
     // return element pointer
     return gameMenu;
 }
+// game menu elements
+// top bar
+// home panel
+// plots panel
 
 // switch between pages
 void switchToPage(UIElement* page) {
@@ -303,8 +310,12 @@ void switchToPage(UIElement* page) {
     CurrentPage = page;
 }
 
-void playGame() {
+void playGame(int diff) {
     // initialize game state
+    if (G) {
+        delete G;
+    }
+    G = new GameState(diff);
 
     switchToPage(GameMenu); // go to game menu
 }
