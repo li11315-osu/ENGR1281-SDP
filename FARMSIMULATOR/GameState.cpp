@@ -22,6 +22,12 @@ GameState::GameState(int diff){
     coins = START_COINS;
     curr_day = 0;
 
+    // Set all boolean variables keeping track of what event has occurred
+    // that day to false
+    for(int i = 0; i < 10; i++) {
+       event_occurred[i] = false;
+    } 
+   
     // Set all of the plots to an empty
     for(int i = 0; i < NUMBER_OF_PLOTS; i++){
         plots[i] = plot{empty, false, 0};
@@ -35,6 +41,7 @@ void GameState::begin_event(){
     int pick = RandInt() % (int)(sizeof(events)/sizeof(events[0]));
 
     event rand_event = events[pick];
+    event_occurred[pick] = true;
 
     // Deciding whether to add money or subtract it
     if(rand_event.isPenalty){
@@ -92,6 +99,11 @@ void GameState::new_day() {
    if (stillAlive) {
       //Increment the day counter
       curr_day++;
+      //Reset all boolean variables keeping track of what event has occurred
+      //that day to false
+      for(int i = 0; i < 10; i++) {
+         event_occurred[i] = false;
+      }
       //Cue the random event for the day
       GameState::begin_event();
    }
