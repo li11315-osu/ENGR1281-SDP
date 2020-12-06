@@ -160,6 +160,13 @@ void GameState::new_day() {
       if (curr_day > total_stats.max_days_survived) {
          total_stats.max_days_survived = curr_day;
       }
+      //Loop through each plot, and if the plot has a crop growing on it,
+      //increment the number of days the plot has been active
+      for (int i = 0; i < NUMBER_OF_PLOTS; i++) {
+         if (plots[i].active) {
+            (plots[i].days_active)++;
+         }
+      }
       //Reset all boolean variables keeping track of what event has occurred
       //that day to false
       for(int i = 0; i < 10; i++) {
