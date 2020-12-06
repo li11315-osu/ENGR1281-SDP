@@ -47,7 +47,7 @@ UIElement* getBackground2();
 
 // helpers for standard menu elements
 RectangleElement* getStandardTitle(int x, int y, int w, stringT label);
-RectangleElement* getStandardButton(int x, int y, int w, stringT label, void (*handler)());
+RectangleElement* getStandardButton(int x, int y, int w, stringT label, std::function<void()> handler);
 
 // menu pages
 UIElement* getMainMenu();
@@ -154,7 +154,7 @@ RectangleElement* getStandardTitle(int x, int y, int w, stringT label) {
     return titleElement;
 }
 // button
-RectangleElement* getStandardButton(int x, int y, int w, stringT label, void (*handler)()) {
+RectangleElement* getStandardButton(int x, int y, int w, stringT label, std::function<void()> handler) {
     // set standard element parameters
     int h = 30; // title assumed to contain single row of text
     int padding = 8; // pixels between shape border and text
@@ -407,12 +407,15 @@ UIElement* getHomePanel() {
     // initialize element pointer
     UIElement* homePanel = new UIElement;
 
+    // add some greeting text
+    homePanel->addChild(new StringElement(15, 57, "Pick a crop to plant", LCD.Black));
+
     // add listings for each crop type
     homePanel->addChild(getCropListing(10, 90, &carrot, getCarrotSprite));
     homePanel->addChild(getCropListing(10, 127, &corn, getCornSprite));
     homePanel->addChild(getCropListing(10, 164, &tomato, getTomatoSprite));
     homePanel->addChild(getCropListing(10, 201, &lettuce, getLettuceSprite));
-
+    
     // add button to go to plots
     homePanel->addChild(getStandardButton(205, 50, 100, "View Plots", [] {
         // on click: switch from home panel to plots panel
@@ -428,6 +431,11 @@ UIElement* getPlotsPanel() {
     UIElement* plotsPanel = new UIElement;
 
     // add pointers to individual plot elements
+    for (int index = 0; index < NUMBER_OF_PLOTS; ++index) {
+        PlotElements[index] = new RectangleElement(0,0,0,0);
+        *PlotElements[index] = getPlotElement(index);
+        plotsPanel->addChild(PlotElements[index]);
+    }
 
     // add button to return to home panel
     plotsPanel->addChild(getStandardButton(205, 50, 100, "Return", [] {
@@ -443,15 +451,38 @@ RectangleElement getPlotElement(int index) {
     // get size and dimensions
     int plotWidth = 45;
     int plotHeight = plotWidth;
-    int plotX = 20 + (50 * (index % 4));
-    int plotY = 50 + (50 * (index / 4));
+    int plotX = 10 + (50 * (index % 6));
+    int plotY = 100 + (50 * (index / 6));
 
     // initialize element pointer
     RectangleElement plotElement = RectangleElement(plotX, plotY, plotWidth, plotHeight);
 
-    // show indicator for crop type
+    if (G->plots[index].active) {
+        // show indicator for crop type
+        UIElement* cropSprite = new UIElement;
+        switch (G->plots[index].type.crop_id) {
+        case 1:
+            cropSprite = getCarrotSprite(plotX+5, plotY+5);
+            break;
+        case 2:
+            cropSprite = getTomatoSprite(plotX+5, plotY+5);
+            break;
+        case 3:
+            cropSprite = getCornSprite(plotX+5, plotY+5);
+            break;
+        case 4:
+            cropSprite = getLettuceSprite(plotX+5, plotY+5);
+            break;
+        default:
+            break;
+        }
+        plotElement.addChild(cropSprite);
 
-    // show indicator for remaining days
+        // show indicator for remaining days
+        char* tempStr = (char*) malloc(sizeof(char) * 3);
+        sprintf(tempStr, "%dd", G->plots[index].type.grow_time - G->plots[index].days_active);
+        plotElement.addChild(new StringElement(plotX+10, plotY+10, tempStr));
+    }
 
     // return element pointer
     return plotElement;
@@ -482,7 +513,7 @@ RectangleElement* getCropListing(int x, int y, const crop_type* cropInfo, UIElem
     // show button for planting crops
     tempStr = (char*) malloc(sizeof(char) * 16);
     sprintf(tempStr, "Plant (    %d)", cropInfo->seed_price);
-    cropListing->addChild(getStandardButton(x+190, y+2, 105, tempStr, [] {
+    cropListing->addChild(getStandardButton(x+190, y+2, 105, tempStr, [cropInfo] {
         // on click: allow user to plant crop in plots
     }));
     cropListing->addChild(getCoinSprite(x+245, y+9));

@@ -33,7 +33,7 @@ bool UIElement::handleClick(int x, int y) {
     return false;
 }
 
-void UIElement::setClickHandler(void (*func)()) {
+void UIElement::setClickHandler(std::function<void()> func) {
     clickHandler = func; // assign handler
     listenForClick = true; // enable click detection
 }

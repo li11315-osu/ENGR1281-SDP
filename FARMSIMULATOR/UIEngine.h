@@ -2,6 +2,7 @@
 #define UIEngine_H
 
 #include "FEHLCD.h"
+#include <functional>
 
 typedef FEHLCD::FEHLCDColor colorT;
 typedef const char* stringT;
@@ -9,7 +10,7 @@ typedef const char* stringT;
 /*
 Proteus UI Engine 
 Created 11/25/2020
-Last Modified: 11/29/2020
+Last Modified: 12/05/2020
 
 With this game being heavily UI-dependent and the FEHLCD library, being 
 somewhat limited, I decided to try implementing a cheap knockoff of the 
@@ -68,7 +69,7 @@ SpriteElement classes just in case we needed them for extra decoration.
 UIElement Class
 Written By Thomas Li
 Created 11/25/2020
-Last Modified 11/27/2020
+Last Modified 12/05/2020
 
 This is the base class that all elements are derived from, containing methods
 for rendering, touch detection, parent/child handling, and positioning that are 
@@ -191,7 +192,7 @@ class UIElement {
     void render();
     bool handleClick(int x, int y);
 
-    void setClickHandler(void (*func)());
+    void setClickHandler(std::function<void()> func);
     void disableClickHandler();
     void enableClickHandler();
 
@@ -232,7 +233,7 @@ class UIElement {
 
     // pointer to the function to be called when the element is clicked
     // by default, this points to an empty function
-    void (*clickHandler)() = [] {};
+    std::function<void()> clickHandler = [] {};
 
     // keep track of the element's position on the screen
     // all derived classes will need this for rendering
