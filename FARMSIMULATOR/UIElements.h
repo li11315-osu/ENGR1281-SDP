@@ -327,11 +327,6 @@ UIElement* getStatisticsPage() {
         return 0;
     }, LCD.White));
 
-    statisticsPage->addChild(new StringElement(30, 153, "Carrots Harvested: ", LCD.White));
-    statisticsPage->addChild(new ValueElement(220, 153, [] {
-        return 0;
-    }, LCD.White));
-
     // add return button
     statisticsPage->addChild(getStandardButton(20, 190, 120, "Return", [] {
         switchToPage(MainMenu);
