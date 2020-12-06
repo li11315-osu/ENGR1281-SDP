@@ -22,7 +22,7 @@ GameState::GameState(int diff){
     // Initialize state variables
     difficulty = diff;
     coins = START_COINS;
-    curr_day = 0;
+    curr_day = 1;
 
     //Check if player selected chaos mode
     if (difficulty == 1) {
@@ -66,12 +66,16 @@ void GameState::begin_event(){
     // Deciding whether to add money or subtract it
     if(rand_event.isPenalty){
         coins -= rand_event.moneyAmount;
+        //Update game statistic of total money lost
+        total_stats.total_money_lost += rand_event.moneyAmount;
         //Set the coins to 0 if they are a negative value
         if (coins < 0) {
            coins = 0;
         }
     } else {
         coins += rand_event.moneyAmount;
+        //Update game statistic of total money earned
+        total_stats.total_money_earned += rand_event.moneyAmount;
     }
 
     wipeout(rand_event.wipeout_list);
@@ -84,12 +88,16 @@ void GameState::begin_event(){
       // Deciding whether to add money or subtract it
       if(rand_event2.isPenalty){
         coins -= rand_event2.moneyAmount;
+        //Update game statistic of total money lost
+        total_stats.total_money_lost += rand_event2.moneyAmount;
         //Set the coins to 0 if they are a negative value
         if (coins < 0) {
            coins = 0;
          }
       } else {
          coins += rand_event2.moneyAmount;
+         //Update game statistic of total money earned
+         total_stats.total_money_earned += rand_event2.moneyAmount;
       }
 
     wipeout(rand_event2.wipeout_list);
@@ -110,10 +118,17 @@ void GameState::plant(plot *p, crop_type *c) {
    if ((*c).seed_price < coins) {
       //Subtract the cost of the seeds from the user's total money
       coins -= (*c).seed_price;
+      //Update game statistic of total money lost
+      total_stats.total_money_lost += (*c).seed_price;
       //Update the state of the selected plot
       (*p).active = true;
       (*p).days_active = 0;
       (*p).type = (*c);
+      //Check if planted crop was a carrot
+      if ((*c).crop_id == 1) {
+         //If so, update game statistic of total carrots planted
+         total_stats.carrots_planted++;
+      }
    }
    //If the user cannot afford the seeds, nothing should happen
 }
@@ -124,6 +139,8 @@ void GameState::harvest(plot *p) {
    if ((*p).days_active >= ((*p).type).grow_time) {
       //Add the sale price of the crop to the user's total money
       coins += ((*p).type).sale_price;
+      //Update game statistic of total money earned
+      total_stats.total_money_earned += ((*p).type).sale_price;
       //Update the state of the selected plot
       (*p).active = false;
       (*p).days_active = 0;
@@ -139,6 +156,10 @@ void GameState::new_day() {
    if (stillAlive) {
       //Increment the day counter
       curr_day++;
+      //Update game statistic for maximum days survived if applicable
+      if (curr_day > total_stats.max_days_survived) {
+         total_stats.max_days_survived = curr_day;
+      }
       //Reset all boolean variables keeping track of what event has occurred
       //that day to false
       for(int i = 0; i < 10; i++) {
@@ -150,4 +171,12 @@ void GameState::new_day() {
    //Do not start a new day if the user is broke
 }
 
-#endif //GameState
+//Written by Annie
+stats GameState::get_game_stats() {
+   //Accessor method so that the game can keep track of statistics from
+   //multiple playthroughs of the game in one run of the program for
+   //the statistics page on the main menu
+   return total_stats;
+}
+
+#endif //GameState 

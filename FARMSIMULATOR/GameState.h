@@ -60,6 +60,23 @@ struct plot_raw {
     */
 } typedef plot;
 
+//Written by Annie
+struct running_game_stats {
+    //Game stats
+    int max_days_survived;
+    int total_money_earned;
+    int total_money_lost;
+    int carrots_planted;
+    /*
+    running_game_stats(int days, int earned, int lost, int car) {
+        max_days_survived = days;
+        total_money_earned = earned;
+        total_money_lost = lost;
+        carrots_planted = car;
+    }
+    */
+} typedef stats;
+
 //Different crop types, including a "null" crop
 const crop_type empty = crop_type{"empty", 0, 0, 0, 0};
 const crop_type carrot = crop_type{"Carrot", 2, 1, 100, 20};
@@ -81,6 +98,8 @@ const event pandemic = event{"Cornona Virus :O", "A deadly plant virus wiped out
 //Written by Drew and Annie
 class GameState {
     public:
+        stats total_stats = stats{0, 0, 0, 0};
+
         //Difficulty setting
         int difficulty;
 
@@ -112,6 +131,8 @@ class GameState {
         void harvest(plot*);
         // Drew
         void wipeout(std::vector<int>);
+        //Annie
+        stats get_game_stats();
 
     private:
 };
