@@ -27,6 +27,9 @@ UIElement* TopBar;
 UIElement* HomePanel;
 UIElement* PlotsPanel;
 
+// transition screen between in-game days
+UIElement* DayTransitionScreen;
+
 // individual plot elements shown in plots panel
 RectangleElement* PlotElements[NUMBER_OF_PLOTS];
 
@@ -60,6 +63,9 @@ UIElement* getTopBar();
 UIElement* getHomePanel();
 UIElement* getPlotsPanel();
 
+// transition screen between in-game days
+UIElement* getDayTransition();
+
 // individual plot elements in plots panel, rendered based on internal plots array
 // these elements will be re-initialized often so this function returns a value 
 // instead of a pointer to make memory management easier
@@ -89,6 +95,7 @@ void initUI() {
     TopBar = getTopBar();
     HomePanel = getHomePanel();
     PlotsPanel = getPlotsPanel();
+    DayTransitionScreen = getDayTransition();
     GameMenu = getGameMenu();
 
     CurrentPage = nullptr;
@@ -371,6 +378,13 @@ UIElement* getTopBar() {
         return G->coins;
     }, LCD.White));
 
+    // add end day button
+    topBar->addChild(getStandardButton(170, 5, 75, "End Day", [] {
+        // on click: start procedure for moving to next day
+        G->new_day();
+        switchToPage(DayTransitionScreen);
+    }));
+
     // add quit button
     topBar->addChild(getStandardButton(255, 5, 50, "Quit", [] {
         // on click: return to main menu
@@ -433,6 +447,29 @@ RectangleElement getPlotElement(int index) {
 // re-initialize plot elements to account for changes in internal data
 void updatePlots() {
     //
+}
+// transition screen
+UIElement* getDayTransition() {
+    // intialize element pointer
+    UIElement* transitionScreen = new UIElement;
+
+    // black background covering entire screen
+    RectangleElement* bg = new RectangleElement(0, 0, 320, 240, LCD.Black);
+    // exit transition screen and start new day when background clicked
+    bg->setClickHandler([] {
+        switchToPage(GameMenu);
+    });
+    transitionScreen->addChild(bg);
+
+    // on-screen text
+    transitionScreen->addChild(new StringElement(100, 100, "Start of Day", LCD.White));
+    transitionScreen->addChild(new ValueElement(195, 101, [] {
+        return G->curr_day;
+    }, LCD.White));
+    transitionScreen->addChild(new StringElement(50, 120, "Click Anywhere to Continue", LCD.White));
+
+    // return element pointer
+    return transitionScreen;
 }
 
 // graphical representation of in-game currency
