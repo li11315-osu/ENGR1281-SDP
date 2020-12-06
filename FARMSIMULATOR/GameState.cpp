@@ -22,7 +22,7 @@ GameState::GameState(int diff){
     // Initialize state variables
     difficulty = diff;
     coins = START_COINS;
-    curr_day = 0;
+    curr_day = 1;
 
     //Check if player selected chaos mode
     if (difficulty == 1) {
