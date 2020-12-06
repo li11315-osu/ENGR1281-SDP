@@ -5,6 +5,8 @@
 #include "GameState.h"
 // #include "constants.h"
 
+// most of the stuff in this file was written by Thomas
+
 // global pointer to state of current game
 GameState* G = new GameState(0);
 
@@ -485,11 +487,11 @@ UIElement getPlotsPanelPlantMode() {
     UIElement subpanel;
 
     // add text informing user of which crop they're planting
-    subpanel.addChild(new StringElement(15, 57, "Planting:", LCD.Black));
-    subpanel.addChild(new StringElement(85, 57, CropToPlant->name, LCD.Black));
+    subpanel.addChild(new StringElement(15, 60, "Planting:", LCD.Black));
+    subpanel.addChild(new StringElement(85, 61, CropToPlant->name, LCD.Black));
 
     // add button to cancel action
-    subpanel.addChild(getStandardButton(205, 50, 100, "Cancel", [] {
+    subpanel.addChild(getStandardButton(205, 55, 100, "Cancel", [] {
         // on click: clear crop to plant, switch from plots panel to home panel
         free(CropToPlant);
         CropToPlant = nullptr;
@@ -504,7 +506,7 @@ UIElement getPlotsPanelViewMode() {
     UIElement subpanel;
 
     // add button to harvest crops
-    subpanel.addChild(getStandardButton(15, 50, 150, "Harvest Crops", [] {
+    subpanel.addChild(getStandardButton(15, 55, 150, "Harvest Crops", [] {
         // on click: harvest and sell crops that are fully-grown, update plots and game state as needed
         for (int index = 0; index < NUMBER_OF_PLOTS; ++index) {
             G->harvest(&(G->plots[index]));
@@ -513,7 +515,7 @@ UIElement getPlotsPanelViewMode() {
     }));
 
     // add button to return to home panel
-    subpanel.addChild(getStandardButton(205, 50, 100, "Return", [] {
+    subpanel.addChild(getStandardButton(205, 55, 100, "Return", [] {
         // on click: switch from plots panel to home panel
         switchToPanel(HomePanel);
     }));
@@ -558,7 +560,9 @@ RectangleElement getPlotElement(int index) {
 
         // show indicator for remaining days
         char* tempStr = (char*) malloc(sizeof(char) * 3);
-        sprintf(tempStr, "%dd", G->plots[index].type.grow_time - G->plots[index].days_active);
+        int daysLeft = G->plots[index].type.grow_time - G->plots[index].days_active;
+        if (daysLeft < 0) daysLeft = 0;
+        sprintf(tempStr, "%dd", daysLeft);
         plotElement.addChild(new StringElement(plotX+10, plotY+16, tempStr, textColor));
 
         
@@ -696,13 +700,28 @@ UIElement* getGameOverScreen() {
     gameOverScreen->addChild(new RectangleElement(0, 0, 320, 240, LCD.Black));
 
     // add message telling user they lost
-    gameOverScreen->addChild(new StringElement(80, 20, "You're Out of Money", LCD.White));
-    gameOverScreen->addChild(new StringElement(75, 45, "(That Means You Lose)", LCD.White));
+    gameOverScreen->addChild(new StringElement(25, 30, "You're out of money!", LCD.White));
+    gameOverScreen->addChild(new StringElement(25, 55, "(That means you lose)", LCD.White));
 
-    // display some statistics about the game or something
+    // display some statistics about the game 
+    gameOverScreen->addChild(new StringElement(25, 95, "Days Survived:", LCD.White));
+    gameOverScreen->addChild(new ValueElement(160, 96, [] {
+        return G->curr_day;
+    }, LCD.White));
+    gameOverScreen->addChild(new StringElement(25, 120, "Your Record:", LCD.White));
+    gameOverScreen->addChild(new ValueElement(160, 121, [] {
+        return G->total_stats.max_days_survived;
+    }, LCD.White));
+    gameOverScreen->addChild(new StringElement(25, 145, "Think you can beat that next time?", LCD.White));
+
+    // add button to allow user to replay immediately
+    gameOverScreen->addChild(getStandardButton(25, 185, 120, "Play Again", [] {
+        // on click: return to menu
+        switchToPage(DifficultySelection);
+    }));
 
     // add button to take user back to main menu
-    gameOverScreen->addChild(getStandardButton(95, 180, 140, "Return to Menu", [] {
+    gameOverScreen->addChild(getStandardButton(155, 185, 140, "Return to Menu", [] {
         // on click: return to menu
         switchToPage(MainMenu);
     }));
