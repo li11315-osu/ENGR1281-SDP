@@ -635,7 +635,8 @@ UIElement* getDayTransition() {
     RectangleElement* bg = new RectangleElement(0, 0, 320, 240, LCD.Black);
     // exit transition screen and start new day when background clicked
     bg->setClickHandler([] {
-        switchToPage(GameMenu);
+        *EventsScreen = getEventsScreen();
+        switchToPage(EventsScreen);
     });
     transitionScreen->addChild(bg);
 
@@ -651,31 +652,62 @@ UIElement* getDayTransition() {
 }
 // events screen
 UIElement getEventsScreen() {
-    UIElement screen;
+    UIElement eventsScreen;
 
     // add background
+    eventsScreen.addChild(getBackground2());
 
     // add header
+    eventsScreen.addChild(new RectangleElement(10, 10, 300, 34, LCD.Black, LCD.White));
+    eventsScreen.addChild(new StringElement(140, 20, "NEWS", LCD.White));
 
     // add body container
+    eventsScreen.addChild(new RectangleElement(10, 54, 300, 176, LCD.Black, LCD.White));
 
     // fill body contents based on which events occurred
+    int textX = 20, textY = 74; // keep track of where to write text
+    for (int index = 0; index <= 10; ++index) {
+        if (G->event_occurred[index]) {
+            eventsScreen.addChild(new StringElement(textX, textY, G->events[index].name, LCD.White));
+            eventsScreen.addChild(new StringElement(textX, textY+20, G->events[index].desc, LCD.White));
+            textY += 50;
+        }
+    }
 
     // add button to take user to home panel
+    eventsScreen.addChild(getStandardButton(110, 180, 100, "Continue", [] {
+        // on click: switch from events screen to game menu if the user still has money
+        // otherwise, it's game over
+        if (G->coins > 0) {
+            switchToPage(GameMenu);
+        }
+        else {
+            switchToPage(GameOverScreen);
+        }
+    }));
 
-    return screen;
+    return eventsScreen;
 }
 // game over screen
 UIElement* getGameOverScreen() {
-    UIElement* screen = new UIElement;
+    UIElement* gameOverScreen = new UIElement;
+
+    // add background
+    gameOverScreen->addChild(new RectangleElement(0, 0, 320, 240, LCD.Black));
 
     // add message telling user they lost
+    gameOverScreen->addChild(new StringElement(80, 20, "You're Out of Money", LCD.White));
+    gameOverScreen->addChild(new StringElement(75, 45, "(That Means You Lose)", LCD.White));
 
     // display some statistics about the game or something
 
     // add button to take user back to main menu
+    gameOverScreen->addChild(getStandardButton(95, 180, 140, "Return to Menu", [] {
+        // on click: return to menu
+        switchToPage(MainMenu);
+    }));
 
-    return screen;
+    return gameOverScreen;
 }
 
 // graphical representation of in-game currency
@@ -758,6 +790,7 @@ void playGame(int diff) {
 
     switchToPage(GameMenu); // go to game menu
     switchToPanel(HomePanel); 
+    updatePlots();
 }
 
 #endif // UIElements_H
