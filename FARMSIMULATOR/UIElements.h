@@ -3,7 +3,6 @@
 
 #include "UIEngine.h"
 #include "GameState.h"
-#include <string>
 // #include "constants.h"
 
 // global pointer to state of current game
@@ -31,14 +30,27 @@ UIElement* PlotsPanel;
 // transition screen between in-game days
 UIElement* DayTransitionScreen;
 
+// screen to display random events that occurred between in-game days
+UIElement* EventsScreen;
+
+// end screen, to be shown when player loses
+UIElement* GameOverScreen;
+
 // individual plot elements shown in plots panel
 RectangleElement* PlotElements[NUMBER_OF_PLOTS];
+
+// contents of plot panel changes depending on whether player is planting crops
+// or just viewing the plots
+UIElement* PlotsPanelContext;
 
 // keep track of currently-displayed menu page
 UIElement* CurrentPage;
 
 // keep track of currently-displayed in-game menu panel
 UIElement* CurrentGamePanel;
+
+// keep track of which crop, if any, to plant on the plots panel
+crop_type* CropToPlant = nullptr;
 
 // prototypes for element intialization functions
 // backgrounds
@@ -67,12 +79,26 @@ UIElement* getPlotsPanel();
 // transition screen between in-game days
 UIElement* getDayTransition();
 
+// random event display screen
+// events screen gets re-initialized often due to different text needing to be 
+// written for different different
+// so a memory location is allocated separately and the initializer function
+// returns a value instead of a pointer to make memory management easier
+UIElement getEventsScreen();
+
+// game over screen
+UIElement* getGameOverScreen();
+
 // individual plot elements in plots panel, rendered based on internal plots array
 // these elements will be re-initialized often so this function returns a value 
 // instead of a pointer to make memory management easier
 RectangleElement getPlotElement(int index);
 // helper function to keep plots panel reflective of internal data
-void updatePlotElements();
+void updatePlots();
+
+// contextual UI subpanels for plots panel
+UIElement getPlotsPanelPlantMode();
+UIElement getPlotsPanelViewMode();
 
 // listings for crops in home panel
 RectangleElement* getCropListing(int x, int y, const crop_type* cropInfo, UIElement* (*spriteFunction)(int, int));
@@ -102,8 +128,14 @@ void initUI() {
 
     TopBar = getTopBar();
     HomePanel = getHomePanel();
+
+    PlotsPanelContext = new UIElement;
     PlotsPanel = getPlotsPanel();
+
     DayTransitionScreen = getDayTransition();
+    EventsScreen = new UIElement;
+    GameOverScreen = getGameOverScreen();
+
     GameMenu = getGameMenu();
 
     CurrentPage = nullptr;
@@ -389,8 +421,11 @@ UIElement* getTopBar() {
     // add end day button
     topBar->addChild(getStandardButton(170, 5, 75, "End Day", [] {
         // on click: start procedure for moving to next day
-        G->new_day();
-        switchToPage(DayTransitionScreen);
+        if (G->coins > 0) {
+            G->new_day();
+            updatePlots();
+            switchToPage(DayTransitionScreen);
+        }
     }));
 
     // add quit button
@@ -437,14 +472,53 @@ UIElement* getPlotsPanel() {
         plotsPanel->addChild(PlotElements[index]);
     }
 
+    // add contextual subpanel
+    plotsPanel->addChild(PlotsPanelContext);
+    *PlotsPanelContext = getPlotsPanelViewMode();
+
+    // return element pointer
+    return plotsPanel;
+}
+// contextual UI subpanels for plots panel
+// planting new crop in plots
+UIElement getPlotsPanelPlantMode() {
+    UIElement subpanel;
+
+    // add text informing user of which crop they're planting
+    subpanel.addChild(new StringElement(15, 57, "Planting:", LCD.Black));
+    subpanel.addChild(new StringElement(85, 57, CropToPlant->name, LCD.Black));
+
+    // add button to cancel action
+    subpanel.addChild(getStandardButton(205, 50, 100, "Cancel", [] {
+        // on click: clear crop to plant, switch from plots panel to home panel
+        free(CropToPlant);
+        CropToPlant = nullptr;
+        updatePlots();
+        switchToPanel(HomePanel);
+    }));
+
+    return subpanel;
+}
+// viewing/harvesting plots
+UIElement getPlotsPanelViewMode() {
+    UIElement subpanel;
+
+    // add button to harvest crops
+    subpanel.addChild(getStandardButton(15, 50, 150, "Harvest Crops", [] {
+        // on click: harvest and sell crops that are fully-grown, update plots and game state as needed
+        for (int index = 0; index < NUMBER_OF_PLOTS; ++index) {
+            G->harvest(&(G->plots[index]));
+            updatePlots();
+        }
+    }));
+
     // add button to return to home panel
-    plotsPanel->addChild(getStandardButton(205, 50, 100, "Return", [] {
+    subpanel.addChild(getStandardButton(205, 50, 100, "Return", [] {
         // on click: switch from plots panel to home panel
         switchToPanel(HomePanel);
     }));
 
-    // return element pointer
-    return plotsPanel;
+    return subpanel;
 }
 // individual plots
 RectangleElement getPlotElement(int index) {
@@ -458,6 +532,9 @@ RectangleElement getPlotElement(int index) {
     RectangleElement plotElement = RectangleElement(plotX, plotY, plotWidth, plotHeight);
 
     if (G->plots[index].active) {
+        // use gray text to show remaining days for corn, white text otherwise
+        colorT textColor = LCD.White;
+
         // show indicator for crop type
         UIElement* cropSprite = new UIElement;
         switch (G->plots[index].type.crop_id) {
@@ -469,6 +546,7 @@ RectangleElement getPlotElement(int index) {
             break;
         case 3:
             cropSprite = getCornSprite(plotX+5, plotY+5);
+            textColor = LCD.Gray;
             break;
         case 4:
             cropSprite = getLettuceSprite(plotX+5, plotY+5);
@@ -481,7 +559,20 @@ RectangleElement getPlotElement(int index) {
         // show indicator for remaining days
         char* tempStr = (char*) malloc(sizeof(char) * 3);
         sprintf(tempStr, "%dd", G->plots[index].type.grow_time - G->plots[index].days_active);
-        plotElement.addChild(new StringElement(plotX+10, plotY+10, tempStr));
+        plotElement.addChild(new StringElement(plotX+10, plotY+16, tempStr, textColor));
+
+        
+    }
+
+    // if current planting a crop, add click handler that allows crop to be planted in plot
+    if (CropToPlant) {
+        plotElement.setClickHandler([index] {
+            // on click: plant selected crop type in plot, update UI to reflect change, return to home panel
+            G->plant(&(G->plots[index]), CropToPlant);
+            CropToPlant = nullptr;
+            updatePlots();
+            switchToPanel(HomePanel);
+        });
     }
 
     // return element pointer
@@ -489,7 +580,15 @@ RectangleElement getPlotElement(int index) {
 }
 // re-initialize plot elements to account for changes in internal data
 void updatePlots() {
-    //
+    if (CropToPlant) {
+        *PlotsPanelContext = getPlotsPanelPlantMode();
+    }
+    else {
+        *PlotsPanelContext = getPlotsPanelViewMode();
+    }
+    for (int index = 0; index < NUMBER_OF_PLOTS; ++index) {
+        *PlotElements[index] = getPlotElement(index);
+    }
 }
 // listings for crops in home panel
 RectangleElement* getCropListing(int x, int y, const crop_type* cropInfo, UIElement* (*spriteFunction)(int, int)) {
@@ -514,12 +613,19 @@ RectangleElement* getCropListing(int x, int y, const crop_type* cropInfo, UIElem
     tempStr = (char*) malloc(sizeof(char) * 16);
     sprintf(tempStr, "Plant (    %d)", cropInfo->seed_price);
     cropListing->addChild(getStandardButton(x+190, y+2, 105, tempStr, [cropInfo] {
-        // on click: allow user to plant crop in plots
+        // on click: allow user to plant crop in plots if they can afford it
+        if (cropInfo->seed_price <= G->coins) {
+            CropToPlant = (crop_type*) malloc(sizeof(crop_type));
+            *CropToPlant = *cropInfo;
+            updatePlots();
+            switchToPanel(PlotsPanel);
+        }
     }));
     cropListing->addChild(getCoinSprite(x+245, y+9));
 
     return cropListing;
 }
+
 // transition screen
 UIElement* getDayTransition() {
     // intialize element pointer
@@ -542,6 +648,34 @@ UIElement* getDayTransition() {
 
     // return element pointer
     return transitionScreen;
+}
+// events screen
+UIElement getEventsScreen() {
+    UIElement screen;
+
+    // add background
+
+    // add header
+
+    // add body container
+
+    // fill body contents based on which events occurred
+
+    // add button to take user to home panel
+
+    return screen;
+}
+// game over screen
+UIElement* getGameOverScreen() {
+    UIElement* screen = new UIElement;
+
+    // add message telling user they lost
+
+    // display some statistics about the game or something
+
+    // add button to take user back to main menu
+
+    return screen;
 }
 
 // graphical representation of in-game currency
@@ -578,7 +712,7 @@ UIElement* getTomatoSprite(int x, int y) {
 
     // sprite consists of scarlet rectangle with much smaller green rectangle on top
     tomatoSprite->addChild(new RectangleElement(x+5, y+10, 21, 15, LCD.Scarlet));
-    tomatoSprite->addChild(new RectangleElement(x+10, y+8, 10, 4, LCD.Green));
+    tomatoSprite->addChild(new RectangleElement(x+10, y+8, 11, 4, LCD.Green));
 
     return tomatoSprite;
 }

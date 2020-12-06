@@ -340,13 +340,13 @@ Written by Thomas Li
 11/27/2020
 */
 // constructors
-ValueElement::ValueElement(int x, int y, int (*func)()) {
+ValueElement::ValueElement(int x, int y, std::function<int()> func) {
     xPos = x;
     yPos = y;
     valueFunction = func;
     fontColor = defaultLine;
 }
-ValueElement::ValueElement(int x, int y, int (*func)(), colorT c) {
+ValueElement::ValueElement(int x, int y, std::function<int()> func, colorT c) {
     xPos = x;
     yPos = y;
     valueFunction = func;

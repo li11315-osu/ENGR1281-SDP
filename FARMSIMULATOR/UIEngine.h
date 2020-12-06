@@ -437,7 +437,7 @@ class StringElement : public TextElement {
 ValueElement class
 Written By Thomas Li
 Created 11/27/2020 
-Last Modified 11/27/2020
+Last Modified 12/05/2020
 
 This class inherits from UIElement, adds members for storing the pointer
 to the value function along with a constructor that can be used to assign
@@ -449,15 +449,15 @@ class ValueElement : public TextElement {
     public:
     // position and function pointer need to be specified by constructor
     // color can be specified or left at default
-    ValueElement(int x, int y, int (*func)());
-    ValueElement(int x, int y, int (*func)(), colorT c);
+    ValueElement(int x, int y, std::function<int()> func);
+    ValueElement(int x, int y, std::function<int()> func, colorT c);
 
     protected:
     // function overrides
     void renderSelf();
 
     // new internal members
-    int (*valueFunction)();
+    std::function<int()> valueFunction;
 };
 
 /*
