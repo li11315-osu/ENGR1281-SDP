@@ -3,6 +3,7 @@
 
 #include "UIEngine.h"
 #include "GameState.h"
+#include <string>
 // #include "constants.h"
 
 // global pointer to state of current game
@@ -73,6 +74,9 @@ RectangleElement getPlotElement(int index);
 // helper function to keep plots panel reflective of internal data
 void updatePlotElements();
 
+// listings for crops in home panel
+RectangleElement* getCropListing(int x, int y, const crop_type* cropInfo, UIElement* (*spriteFunction)(int, int));
+
 // helper function to initialize game state and display game menu
 void playGame(int diff);
 // helper function to switch between menu pages
@@ -82,6 +86,10 @@ void switchToPanel(UIElement* panel);
 
 // entity graphics
 CircleElement* getCoinSprite(int x, int y);
+UIElement* getCarrotSprite(int x, int y);
+UIElement* getTomatoSprite(int x, int y);
+UIElement* getCornSprite(int x, int y);
+UIElement* getLettuceSprite(int x, int y);
 
 // function to initialize global element pointers
 void initUI() {
@@ -400,6 +408,10 @@ UIElement* getHomePanel() {
     UIElement* homePanel = new UIElement;
 
     // add listings for each crop type
+    homePanel->addChild(getCropListing(10, 90, &carrot, getCarrotSprite));
+    homePanel->addChild(getCropListing(10, 127, &corn, getCornSprite));
+    homePanel->addChild(getCropListing(10, 164, &tomato, getTomatoSprite));
+    homePanel->addChild(getCropListing(10, 201, &lettuce, getLettuceSprite));
 
     // add button to go to plots
     homePanel->addChild(getStandardButton(205, 50, 100, "View Plots", [] {
@@ -448,6 +460,35 @@ RectangleElement getPlotElement(int index) {
 void updatePlots() {
     //
 }
+// listings for crops in home panel
+RectangleElement* getCropListing(int x, int y, const crop_type* cropInfo, UIElement* (*spriteFunction)(int, int)) {
+    // for storing int values in cstring
+    char* tempStr = (char*) malloc(sizeof(char) * 16);
+
+    // create element container
+    RectangleElement* cropListing = new RectangleElement(x, y, 300, 35, LCD.Black, LCD.White);
+
+    // add crop sprite
+    cropListing->addChild(spriteFunction(x, y));
+
+    // list crop name
+    cropListing->addChild(new StringElement(x+35, y+10, cropInfo->name, LCD.White));
+
+    // list grow time and sell price
+    sprintf(tempStr, "(%dd,    %d)", cropInfo->grow_time, cropInfo->sale_price);
+    cropListing->addChild(new StringElement(x+100, y+10, tempStr, LCD.White));
+    cropListing->addChild(getCoinSprite(x+130, y+9));
+
+    // show button for planting crops
+    tempStr = (char*) malloc(sizeof(char) * 16);
+    sprintf(tempStr, "Plant (    %d)", cropInfo->seed_price);
+    cropListing->addChild(getStandardButton(x+190, y+2, 105, tempStr, [] {
+        // on click: allow user to plant crop in plots
+    }));
+    cropListing->addChild(getCoinSprite(x+245, y+9));
+
+    return cropListing;
+}
 // transition screen
 UIElement* getDayTransition() {
     // intialize element pointer
@@ -483,6 +524,53 @@ CircleElement* getCoinSprite(int x, int y) {
     coinSprite->addChild(new StringElement(x+3, y+3, "c", LCD.Gray));
 
     return coinSprite;
+}
+// all crop sprites assumed to be around 35-by-30 pixels
+// graphical representation of carrot
+UIElement* getCarrotSprite(int x, int y) {
+    UIElement* carrotSprite = new UIElement;
+
+    // sprite consists of multiple thin red rectangles  
+    // with smaller green rectangles on top
+    carrotSprite->addChild(new RectangleElement(x+4, y+10, 5, 24, LCD.Red));
+    carrotSprite->addChild(new RectangleElement(x+4, y+4, 5, 5, LCD.Green));
+    carrotSprite->addChild(new RectangleElement(x+13, y+10, 5, 24, LCD.Red));
+    carrotSprite->addChild(new RectangleElement(x+13, y+4, 5, 5, LCD.Green));
+    carrotSprite->addChild(new RectangleElement(x+22, y+10, 5, 24, LCD.Red));
+    carrotSprite->addChild(new RectangleElement(x+22, y+4, 5, 5, LCD.Green));
+
+    return carrotSprite;
+}
+// graphical representation of tomato
+UIElement* getTomatoSprite(int x, int y) {
+    UIElement* tomatoSprite = new UIElement;
+
+    // sprite consists of scarlet rectangle with much smaller green rectangle on top
+    tomatoSprite->addChild(new RectangleElement(x+5, y+10, 21, 15, LCD.Scarlet));
+    tomatoSprite->addChild(new RectangleElement(x+10, y+8, 10, 4, LCD.Green));
+
+    return tomatoSprite;
+}
+// graphical representation of corn
+UIElement* getCornSprite(int x, int y) {
+    UIElement* cornSprite = new UIElement;
+
+    // sprite consists of multiple white rectangles with green rectangles below
+    cornSprite->addChild(new RectangleElement(x+4, y+4, 9, 19, LCD.White));
+    cornSprite->addChild(new RectangleElement(x+4, y+23, 9, 10, LCD.Green));
+    cornSprite->addChild(new RectangleElement(x+17, y+4, 9, 19, LCD.White));
+    cornSprite->addChild(new RectangleElement(x+17, y+23, 9, 10, LCD.Green));
+
+    return cornSprite;
+}
+// graphical representation of lettuce
+UIElement* getLettuceSprite(int x, int y) {
+    UIElement* lettuceSprite = new UIElement;
+
+    // sprite consists of green rectangle
+    lettuceSprite->addChild(new RectangleElement(x+7, y+7, 15, 21, LCD.Green));
+
+    return lettuceSprite;
 }
 
 // switch between pages

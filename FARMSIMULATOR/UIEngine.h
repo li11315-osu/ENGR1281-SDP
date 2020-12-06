@@ -4,7 +4,7 @@
 #include "FEHLCD.h"
 
 typedef FEHLCD::FEHLCDColor colorT;
-typedef char* stringT;
+typedef const char* stringT;
 
 /*
 Proteus UI Engine 
