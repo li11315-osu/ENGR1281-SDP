@@ -89,6 +89,7 @@ class GameState {
 
         // The random events that can occur in between days
         event events[10] = {flood, tornado, fire, sunny_day, thief, rain, bug, fertilizer, pandemic};
+        bool event_occurred[10];
 
         //Misc. game stats
         int coins;
