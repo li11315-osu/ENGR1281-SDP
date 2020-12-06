@@ -85,20 +85,21 @@ const crop_type corn = crop_type{"Corn", 3, 3, 170, 30};
 const crop_type lettuce = crop_type{"Lettuce", 5, 4, 300, 60};
 
 //Different random events, one occurs each day
-const event flood = event{"Flood", "A flash flood has destroyed some of your crops!", true, 10, std::vector<int>{0, 1, 2, 3}};
+const event flood = event{"Flood", "A destructive flash flood!", true, 10, std::vector<int>{0, 1, 2, 3}};
 const event tornado = event{"Tornado", "TORNADO! All of your crops are gone", true, 50, std::vector<int>{0,1,2,3,4,5,6,7,8,9,10,11}};
 const event fire = event{"Fire", "A part of the field caught fire!", true, 20, std::vector<int>{8,9,10,11}};
-const event sunny_day = event{"Sunny day :)", "Blue skies reign on this beautiful morning!", false, 40, std::vector<int>{}};
-const event thief = event{"Thief!", "Someone broke in! They stole money and may have taken some crops.", true, 100, std::vector<int>{4, 5, 6, 7}};
-const event rain = event{"Gentle rainfall", "The crops are loving the water!", false, 50, std::vector<int>{}};
-const event bug = event{"Monster bug!", "A giant bug has stomped around and damaged the farm.", true, 70, std::vector<int>{6, 7, 8, 9, 10, 11}};
-const event fertilizer = event{"Free fertilizer!", "Your neighbors have given you a gift!", false, 50, std::vector<int>{}};
-const event pandemic = event{"Cornona Virus :O", "A deadly plant virus wiped out half your plots!", true, 60, std::vector<int>{0, 1, 2, 3, 4, 5}};
+const event sunny_day = event{"Sunny day :)", "Blue skies and sunshine!", false, 40, std::vector<int>{}};
+const event thief = event{"Thief!", "Someone broke in! What'd they take?", true, 100, std::vector<int>{4, 5, 6, 7}};
+const event rain = event{"Rain :)", "The crops are loving the water!", false, 50, std::vector<int>{}};
+const event bug = event{"Monster bug!", "A giant bug has stomped around!", true, 70, std::vector<int>{6, 7, 8, 9, 10, 11}};
+const event fertilizer = event{"Free fertilizer!", "Gift from the neighbors!", false, 50, std::vector<int>{}};
+const event pandemic = event{"Cornona Virus :O", "A deadly plant virus!!!", true, 60, std::vector<int>{0, 1, 2, 3, 4, 5}};
+const event mystery = event{"Where'd they go?", "It's a mystery event!", true, 70, std::vector<int>{3, 4, 5, 6, 7, 8}};
 
 //Written by Drew and Annie
 class GameState {
     public:
-        stats total_stats = stats{0, 0, 0, 0};
+        stats total_stats;
 
         //Difficulty setting
         int difficulty;
@@ -107,7 +108,7 @@ class GameState {
         plot plots[NUMBER_OF_PLOTS];
 
         // The random events that can occur in between days
-        event events[10] = {flood, tornado, fire, sunny_day, thief, rain, bug, fertilizer, pandemic};
+        event events[10] = {flood, tornado, fire, sunny_day, thief, rain, bug, fertilizer, pandemic, mystery};
         bool event_occurred[10];
 
         //Misc. game stats
