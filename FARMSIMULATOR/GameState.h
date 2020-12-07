@@ -9,6 +9,11 @@
 
 // Written by Annie and Drew
 // Stores the properties of the events that can occur
+// These include the name of the event, a brief description of
+// the event, whether or not the event has a negative effect 
+// on the user, the change in user's money caused by the event,
+// and a list of which plots, if any, should be wiped out as a
+// result of the event.
 struct event_raw {
     char name[32];
 
@@ -21,6 +26,10 @@ struct event_raw {
 
 // Written by Annie and Drew
 // Stores the properties of the crops that can be planted
+// These include the name of the crop, the amount of days
+// the crop takes to grow, the crop ID we defined for each
+// crop, the sale price of the crop, and the price of the 
+// seed of the crop.
 struct crop_type_raw {
     char name[32];
     int grow_time;
@@ -31,6 +40,8 @@ struct crop_type_raw {
 
 // Written by Annie and Drew
 // Stores the properties of the plots that will make up the farm
+// These include the type of crop on the plot, whether or not
+// the plot is active, and how many days the plot has been active.
 struct plot_raw {
     crop_type type;
     bool active;
@@ -39,6 +50,10 @@ struct plot_raw {
 
 //Written by Annie
 // Stores the up to date stats of the game as it is running
+// These include the maximum number of days survived by the
+// user, the total amount of money the user has earned, the
+// total amount of money the user has lost, and the number
+// of carrots planted by the user.
 struct running_game_stats {
     //Game stats
     int max_days_survived;
@@ -49,11 +64,11 @@ struct running_game_stats {
 
 // Crops by Annie and Drew
 // Different crop types, including a "null" crop
-const crop_type empty = crop_type{"empty", 0, 0, 0, 0};
-const crop_type carrot = crop_type{"Carrot", 2, 1, 100, 20};
-const crop_type tomato = crop_type{"Tomato", 4, 2, 250, 40};
-const crop_type corn = crop_type{"Corn", 3, 3, 170, 30};
-const crop_type lettuce = crop_type{"Lettuce", 5, 4, 300, 60};
+const crop_type empty = crop_type{"empty", 0, 0, 0, 0}; //Crop ID = 0
+const crop_type carrot = crop_type{"Carrot", 2, 1, 100, 20}; //Crop ID = 1
+const crop_type tomato = crop_type{"Tomato", 4, 2, 250, 40}; //Crop ID = 2
+const crop_type corn = crop_type{"Corn", 3, 3, 170, 30}; //Crop ID = 3
+const crop_type lettuce = crop_type{"Lettuce", 5, 4, 300, 60}; //Crop ID = 4
 
 // Events by Annie and Drew
 // Different random events, one occurs each day
@@ -72,6 +87,11 @@ const event mystery = event{"Where'd they go?", "It's a mystery event!", true, 7
 // Represents the current state of the farm.
 // This includes the amount of money you have
 // and what crops you have planted.
+// This also includes the selected difficulty for the game, the possible events
+// that can occur in the game, an array of boolean values storing whether or not 
+// each event occurs each day, the number of the day you are on, the methods all
+// defined and described in GameState.cpp, and the running game stats described 
+// in the stat struct definition.
 class GameState {
     public:
 
