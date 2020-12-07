@@ -99,7 +99,6 @@ const event mystery = event{"Where'd they go?", "It's a mystery event!", true, 7
 //Written by Drew and Annie
 class GameState {
     public:
-        stats total_stats;
 
         //Difficulty setting
         int difficulty;
@@ -132,9 +131,10 @@ class GameState {
         void harvest(plot*);
         // Drew
         void wipeout(std::vector<int>);
-        //Annie
+        //Annie + Drew
         stats get_game_stats();
 
     private:
+        stats total_stats;
 };
 #endif // GameState_H 
