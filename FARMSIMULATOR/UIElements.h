@@ -255,9 +255,9 @@ UIElement* getCreditsPage() {
 
     // add body
     creditsPage->addChild(new RectangleElement(20, 73, 280, 110, LCD.Black));
-    creditsPage->addChild(new StringElement(30, 85, "Drew Ripberger - ", LCD.White));
-    creditsPage->addChild(new StringElement(30, 120, "Annie Getts - ", LCD.White));
-    creditsPage->addChild(new StringElement(30, 155, "Thomas Li - ", LCD.White));
+    creditsPage->addChild(new StringElement(30, 85, "Drew Ripberger - Data/Game State", LCD.White));
+    creditsPage->addChild(new StringElement(30, 120, "Annie Getts - Data/Game State", LCD.White));
+    creditsPage->addChild(new StringElement(30, 155, "Thomas Li - UI Elements", LCD.White));
 
     // add return button
     creditsPage->addChild(getStandardButton(20, 190, 120, "Return", [] {
