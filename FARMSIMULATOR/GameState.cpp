@@ -7,16 +7,24 @@
 #include "GameState.h"
 #include "FEHRandom.h"
 
+// Inital constants and setup by Drew
 #define NUMBER_OF_PLOTS 12
 #define START_COINS 500
 //All "chaos mode" additions made by Annie
 #define CHAOS_START_COINS 400
 
+// Written by Drew
+// Simple text function that returns "Hello, World"
+// as a C string. Used to test calling GameState functions
+// from the UI
 char* GameState::test() {
    return "Hello, World!";
 }
 
-//Written by Drew
+// Written by Drew
+// Constructor
+// Sets of the plots to empty, the events to inactive
+// and resets the local game stats.
 GameState::GameState(int diff){
 
     // Initialize state variables
@@ -54,7 +62,9 @@ GameState::GameState(int diff){
 
 }
 
-//Written by Drew
+// Written by Drew
+// begin_event generates a random event and applies
+// the consequences to the farm
 void GameState::begin_event(){
     // Generating random number [0, number of events]
     int pick1 = RandInt() % (int)(sizeof(events)/sizeof(events[0]));
@@ -105,15 +115,16 @@ void GameState::begin_event(){
     }
 }
 
-//Written by Drew
+// Written by Drew
+// wipeout takes a vector of indices and destroys the
+// corresponding crops
 void GameState::wipeout(std::vector<int> wl){
     for(int i = 0; i < wl.size(); i++){
         plots[wl.at(i)] = plot_raw{empty, false, 0};
     }
-    
 }
 
-//Written by Annie + Drew
+//Written by Annie
 void GameState::plant(plot *p, crop_type *c) {
    //Check to make sure the user can afford the seeds
    if ((*c).seed_price < coins) {
