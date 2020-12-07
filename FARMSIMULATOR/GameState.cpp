@@ -125,6 +125,11 @@ void GameState::wipeout(std::vector<int> wl){
 }
 
 //Written by Annie
+//This function takes the selected plot and selected crop type as input arguments.
+//The return type is void.
+//It checks the input crop type to make sure the user can afford the plant they 
+//are trying to buy, and if so purchases the seed and updates the state of the
+//plot that the user was trying to plant the crop on.
 void GameState::plant(plot *p, crop_type *c) {
    //Check to make sure the user can afford the seeds
    if ((*c).seed_price < coins) {
@@ -146,6 +151,10 @@ void GameState::plant(plot *p, crop_type *c) {
 }
 
 //Written by Annie
+//This function takes the selected plot as an input argument.
+//The return type is void.
+//It checks if the selected plot is ready to be harvested, and
+//if so, it harvests the crop and updates the user stats accordingly.
 void GameState::harvest(plot *p) {
    //Make sure the selected plot is ready for harvest
    if ((*p).days_active >= ((*p).type).grow_time) {
@@ -162,6 +171,11 @@ void GameState::harvest(plot *p) {
 }
 
 //Written by Annie
+//This function has no arguments, and its return type is void.
+//It makes sure the user still has some amount of money, and
+//if so, starts the new day. The new day involves incrementing
+//the day counter, incrementing the number of days that each
+//active plot has been active, and cue a random event to happen.
 void GameState::new_day() {
    //Make sure the user isn't dead yet
    stillAlive = (coins > 0);
@@ -191,10 +205,11 @@ void GameState::new_day() {
 }
 
 //Written by Annie
+//This function has no arguments and the return type is a stats struct.
+//Accessor method so that the game can keep track of statistics from
+//multiple playthroughs of the game in one run of the program for
+//the statistics page on the main menu.
 stats GameState::get_game_stats() {
-   //Accessor method so that the game can keep track of statistics from
-   //multiple playthroughs of the game in one run of the program for
-   //the statistics page on the main menu
    return total_stats;
 }
 
