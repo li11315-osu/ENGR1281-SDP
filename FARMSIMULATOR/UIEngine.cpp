@@ -362,6 +362,8 @@ void ValueElement::renderSelf() {
 
 /*
 Member functions for SpriteElement
+Written by Thomas Li
+11/27/2020
 */
 // constructors
 SpriteElement::SpriteElement(int x, int y, int w, int h) {

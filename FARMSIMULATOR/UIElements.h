@@ -705,7 +705,7 @@ UIElement* getGameOverScreen() {
     }, LCD.White));
     gameOverScreen->addChild(new StringElement(25, 120, "Your Record:", LCD.White));
     gameOverScreen->addChild(new ValueElement(160, 121, [] {
-        return G->total_stats.max_days_survived;
+        return G->get_game_stats().max_days_survived;
     }, LCD.White));
     gameOverScreen->addChild(new StringElement(25, 145, "Think you can beat that next time?", LCD.White));
 
