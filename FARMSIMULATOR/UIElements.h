@@ -3,6 +3,8 @@
 
 #include "UIEngine.h"
 #include "GameState.h"
+#include <cstdlib>
+
 // #include "constants.h"
 
 // global pointer to state of current game
@@ -15,7 +17,6 @@ UIElement* Screen = new UIElement;
 // menu pages
 UIElement* MainMenu;
 UIElement* CreditsPage;
-UIElement* StatisticsPage;
 UIElement* InstructionsPage;
 
 // game pages
@@ -122,7 +123,6 @@ void initUI() {
     MainMenu = getMainMenu();
     CreditsPage = getCreditsPage();
     InstructionsPage = getInstructionsPage();
-    StatisticsPage = getStatisticsPage();
 
     DifficultySelection = getDifficultySelection();
 
@@ -230,7 +230,7 @@ UIElement* getMainMenu() {
     // add statistics button
     mainMenu->addChild(getStandardButton(20, 151, 120, "Statistics", [] {
         // on click: switch to statistics page
-        switchToPage(StatisticsPage);
+        switchToPage(getStatisticsPage());
     }));
 
     // add credits button
@@ -307,25 +307,25 @@ UIElement* getStatisticsPage() {
     // add body
     statisticsPage->addChild(new RectangleElement(20, 73, 280, 110, LCD.Black));
 
+    stats game_stats = G->get_game_stats();
+
+    int max_days = game_stats.max_days_survived;
+    int total_earned = game_stats.total_money_earned;
+    int total_lost = game_stats.total_money_lost;
+    int total_carrots = game_stats.carrots_planted;
+
+
     statisticsPage->addChild(new StringElement(30, 85, "Max Days Survived: ", LCD.White));
-    statisticsPage->addChild(new ValueElement(220, 85, [] {
-        return 0;
-    }, LCD.White));
+    statisticsPage->addChild(new ValueElement(220, 85, [max_days](){return max_days;}, LCD.White));
 
     statisticsPage->addChild(new StringElement(30, 102, "Total Money Earned: ", LCD.White));
-    statisticsPage->addChild(new ValueElement(220, 102, [] {
-        return 0;
-    }, LCD.White));
+    statisticsPage->addChild(new ValueElement(220, 102, [total_earned](){return total_earned;}, LCD.White));
 
     statisticsPage->addChild(new StringElement(30, 119, "Total Money Lost: ", LCD.White));
-    statisticsPage->addChild(new ValueElement(220, 119, [] {
-        return 0;
-    }, LCD.White));
+    statisticsPage->addChild(new ValueElement(220, 119, [total_lost](){return total_lost;}, LCD.White));
 
     statisticsPage->addChild(new StringElement(30, 136, "Carrots Planted: ", LCD.White));
-    statisticsPage->addChild(new ValueElement(220, 136, [] {
-        return 0;
-    }, LCD.White));
+    statisticsPage->addChild(new ValueElement(220, 136, [total_carrots](){return total_carrots;}, LCD.White));
 
     // add return button
     statisticsPage->addChild(getStandardButton(20, 190, 120, "Return", [] {

@@ -23,6 +23,7 @@ GameState::GameState(int diff){
     difficulty = diff;
     coins = START_COINS;
     curr_day = 1;
+    total_stats = stats{0, 0, 0, 0};
 
     //Check if player selected chaos mode
     if (difficulty == 1) {
@@ -112,14 +113,14 @@ void GameState::wipeout(std::vector<int> wl){
     
 }
 
-//Written by Annie
+//Written by Annie + Drew
 void GameState::plant(plot *p, crop_type *c) {
    //Check to make sure the user can afford the seeds
    if ((*c).seed_price < coins) {
       //Subtract the cost of the seeds from the user's total money
       coins -= (*c).seed_price;
       //Update game statistic of total money lost
-      total_stats.total_money_lost += (*c).seed_price;
+      total_stats.total_money_lost += ((*c).seed_price + (*c).seed_price);
       //Update the state of the selected plot
       (*p).active = true;
       (*p).days_active = 0;
